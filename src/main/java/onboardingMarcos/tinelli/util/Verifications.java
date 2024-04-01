@@ -3,6 +3,7 @@ package onboardingMarcos.tinelli.util;
 import java.util.Objects;
 import lombok.extern.log4j.Log4j2;
 import onboardingMarcos.tinelli.exceptions.BadRequestException;
+import onboardingMarcos.tinelli.repository.NfeRepository;
 import onboardingMarcos.tinelli.requests.TaxesPostRequestBody;
 import onboardingMarcos.tinelli.requests.TaxesPutRequestBody;
 import onboardingMarcos.tinelli.requests.UserPostRequestBody;
@@ -11,7 +12,7 @@ import onboardingMarcos.tinelli.requests.UserPutRequestBody;
 @Log4j2
 public class Verifications {
 
-  private Verifications() {
+  private Verifications(NfeRepository nfeRepository) {
   }
 
   public static void VerificationUserPOST(UserPostRequestBody user) {
@@ -62,4 +63,5 @@ public class Verifications {
     }
 
   }
+
 }
