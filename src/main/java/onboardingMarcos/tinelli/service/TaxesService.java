@@ -6,6 +6,8 @@ import onboardingMarcos.tinelli.domain.Taxes;
 import onboardingMarcos.tinelli.exceptions.BadRequestException;
 import onboardingMarcos.tinelli.repository.TaxesRepository;
 import onboardingMarcos.tinelli.requests.TaxesPostRequestBody;
+import onboardingMarcos.tinelli.requests.TaxesPutRequestBody;
+import onboardingMarcos.tinelli.util.Verifications;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -34,6 +36,7 @@ public class TaxesService {
   }
 
   public Taxes save(TaxesPostRequestBody taxesPostRequestBody) {
+    Verifications.VerificationTaxesPOST(taxesPostRequestBody);
     return taxesRepository.save(
         new Taxes(
             lastTaxesID() + 1,
@@ -48,5 +51,15 @@ public class TaxesService {
     taxesRepository.deleteById(id);
   }
 
-  
+  public void replace(TaxesPutRequestBody taxesPutRequestBody) {
+    Taxes savedTaxes = findByIdOrThrowBadRequestException(taxesPutRequestBody.getId());
+    Verifications.VerificationTaxesPUT(taxesPutRequestBody);
+    taxesRepository.save(
+        new Taxes(
+            savedTaxes.getId(),
+            taxesPutRequestBody.getName(),
+            taxesPutRequestBody.getAliquot()
+        )
+    );
+  }
 }

@@ -3,6 +3,7 @@ package onboardingMarcos.tinelli.controller;
 import java.util.List;
 import onboardingMarcos.tinelli.domain.Taxes;
 import onboardingMarcos.tinelli.requests.TaxesPostRequestBody;
+import onboardingMarcos.tinelli.requests.TaxesPutRequestBody;
 import onboardingMarcos.tinelli.service.TaxesService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -35,6 +36,12 @@ public class TaxesController {
   @DeleteMapping("/{id}")
   public ResponseEntity<Void> delete(@PathVariable Long id) {
     taxesService.delete(id);
+    return ResponseEntity.noContent().build();
+  }
+
+  @PutMapping
+  public ResponseEntity<Void> replace(@RequestBody TaxesPutRequestBody taxesPutRequestBody) {
+    taxesService.replace(taxesPutRequestBody);
     return ResponseEntity.noContent().build();
   }
 

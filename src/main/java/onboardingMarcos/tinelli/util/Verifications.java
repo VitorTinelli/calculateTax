@@ -3,6 +3,8 @@ package onboardingMarcos.tinelli.util;
 import java.util.Objects;
 import lombok.extern.log4j.Log4j2;
 import onboardingMarcos.tinelli.exceptions.BadRequestException;
+import onboardingMarcos.tinelli.requests.TaxesPostRequestBody;
+import onboardingMarcos.tinelli.requests.TaxesPutRequestBody;
 import onboardingMarcos.tinelli.requests.UserPostRequestBody;
 import onboardingMarcos.tinelli.requests.UserPutRequestBody;
 
@@ -40,5 +42,24 @@ public class Verifications {
         "gerente")) {
       throw new BadRequestException("User type must be 'contador' or 'gerente'");
     }
+  }
+
+  public static void VerificationTaxesPOST(TaxesPostRequestBody taxes) {
+    if (taxes.getName().isBlank()) {
+      throw new BadRequestException("You have to fill all fields");
+    }
+    if (taxes.getAliquot() < 0) {
+      throw new BadRequestException("Aliquot must be greater than 0");
+    }
+  }
+
+  public static void VerificationTaxesPUT(TaxesPutRequestBody taxes) {
+    if (taxes.getName().isBlank()) {
+      throw new BadRequestException("You have to fill all fields");
+    }
+    if (taxes.getAliquot() < 0) {
+      throw new BadRequestException("Aliquot must be greater than 0");
+    }
+
   }
 }
