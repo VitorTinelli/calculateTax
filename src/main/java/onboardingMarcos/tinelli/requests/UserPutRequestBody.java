@@ -2,21 +2,32 @@ package onboardingMarcos.tinelli.requests;
 
 import java.util.Objects;
 
-public class UserPostRequestBody {
+public class UserPutRequestBody {
 
+  private Long id;
   private String name;
   private Long cpf;
   private String password;
   private String userType;
 
-  public UserPostRequestBody(String name, Long cpf, String password, String userType) {
+  public UserPutRequestBody(Long id, String name, Long cpf, String password, String userType) {
+    this.id = id;
     this.name = name;
     this.cpf = cpf;
     this.password = password;
     this.userType = userType;
   }
 
-  public UserPostRequestBody() {
+  public UserPutRequestBody() {
+
+  }
+
+  public Long getId() {
+    return id;
+  }
+
+  public void setId(Long id) {
+    this.id = id;
   }
 
   public String getName() {
@@ -59,21 +70,22 @@ public class UserPostRequestBody {
     if (o == null || getClass() != o.getClass()) {
       return false;
     }
-    UserPostRequestBody that = (UserPostRequestBody) o;
-    return Objects.equals(name, that.name) && Objects.equals(cpf, that.cpf)
-        && Objects.equals(password, that.password) && Objects.equals(userType,
-        that.userType);
+    UserPutRequestBody that = (UserPutRequestBody) o;
+    return Objects.equals(id, that.id) && Objects.equals(name, that.name)
+        && Objects.equals(cpf, that.cpf) && Objects.equals(password,
+        that.password) && Objects.equals(userType, that.userType);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(name, cpf, password, userType);
+    return Objects.hash(id, name, cpf, password, userType);
   }
 
   @Override
   public String toString() {
-    return "UserPostRequestBody{" +
-        "name='" + name + '\'' +
+    return "UserPutRequestBody{" +
+        "id=" + id +
+        ", name='" + name + '\'' +
         ", cpf=" + cpf +
         ", password='" + password + '\'' +
         ", userType='" + userType + '\'' +

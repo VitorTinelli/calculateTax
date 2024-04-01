@@ -4,6 +4,7 @@ package onboardingMarcos.tinelli.controller;
 import java.util.List;
 import onboardingMarcos.tinelli.domain.Users;
 import onboardingMarcos.tinelli.requests.UserPostRequestBody;
+import onboardingMarcos.tinelli.requests.UserPutRequestBody;
 import onboardingMarcos.tinelli.service.UserService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -34,5 +35,16 @@ public class UserController {
     return ResponseEntity.ok(userService.save(user));
   }
 
+  @DeleteMapping(path = "/{id}")
+  public ResponseEntity<Void> delete(@PathVariable Long id) {
+    userService.delete(id);
+    return ResponseEntity.noContent().build();
+  }
+
+  @PutMapping
+  public ResponseEntity<Void> replace(@RequestBody UserPutRequestBody userPutRequestBody) {
+    userService.replace(userPutRequestBody);
+    return ResponseEntity.noContent().build();
+  }
 
 }
