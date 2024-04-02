@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.UUID;
 import onboardingMarcos.tinelli.domain.Nfe;
 import onboardingMarcos.tinelli.requests.NfePostRequestBody;
+import onboardingMarcos.tinelli.requests.NfePutRequestBody;
 import onboardingMarcos.tinelli.service.NfeService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -31,5 +32,17 @@ public class NfeController {
   @PostMapping
   public ResponseEntity<Nfe> save(@RequestBody NfePostRequestBody nfePostRequestBody) {
     return ResponseEntity.ok(nfeService.save(nfePostRequestBody));
+  }
+
+  @DeleteMapping("/{id}")
+  public ResponseEntity<Void> delete(@PathVariable UUID id) {
+    nfeService.delete(id);
+    return ResponseEntity.noContent().build();
+  }
+
+  @PutMapping
+  public ResponseEntity<Void> replace(@RequestBody NfePutRequestBody nfePutRequestBody) {
+    nfeService.replace(nfePutRequestBody);
+    return ResponseEntity.noContent().build();
   }
 }

@@ -6,6 +6,7 @@ import onboardingMarcos.tinelli.domain.Nfe;
 import onboardingMarcos.tinelli.exceptions.BadRequestException;
 import onboardingMarcos.tinelli.repository.NfeRepository;
 import onboardingMarcos.tinelli.requests.NfePostRequestBody;
+import onboardingMarcos.tinelli.requests.NfePutRequestBody;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -38,6 +39,23 @@ public class NfeService {
             nfePostRequestBody.getNumber(),
             nfePostRequestBody.getDate(),
             nfePostRequestBody.getValue()
+        )
+    );
+  }
+
+  public void delete(UUID uuid) {
+    findByIdOrThrowBadRequestException(uuid);
+    nfeRepository.deleteById(uuid);
+  }
+
+  public void replace(NfePutRequestBody nfePutRequestBody) {
+    Nfe savedNfe = findByIdOrThrowBadRequestException(nfePutRequestBody.getId());
+    nfeRepository.save(
+        new Nfe(
+            savedNfe.getId(),
+            nfePutRequestBody.getNumber(),
+            nfePutRequestBody.getDate(),
+            nfePutRequestBody.getValue()
         )
     );
   }
