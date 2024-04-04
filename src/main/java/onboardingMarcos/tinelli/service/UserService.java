@@ -46,7 +46,7 @@ public class UserService {
     if (findByCPForReturnNull(user.getCpf()) != null) {
       throw new BadRequestException("CPF already registered");
     }
-    Verifications.VerificationUserPOST(user);
+    Verifications.verificationUserPOST(user);
     try {
       return usersRepository.save(
           new Users(
@@ -69,7 +69,7 @@ public class UserService {
   }
 
   public void replace(UserPutRequestBody userPutRequestBody) {
-    Verifications.VerificationUserPUT(userPutRequestBody);
+    Verifications.verificationUserPUT(userPutRequestBody);
     Users savedUser = findByIdOrThrowBadRequestException(userPutRequestBody.getId());
     if (findByCPForReturnNull(userPutRequestBody.getCpf()) != null
         && savedUser.getId() != findByCPForReturnNull(userPutRequestBody.getCpf()).getId()) {

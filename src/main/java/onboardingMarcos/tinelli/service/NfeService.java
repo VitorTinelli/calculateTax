@@ -7,6 +7,7 @@ import onboardingMarcos.tinelli.exceptions.BadRequestException;
 import onboardingMarcos.tinelli.repository.NfeRepository;
 import onboardingMarcos.tinelli.requests.NfePostRequestBody;
 import onboardingMarcos.tinelli.requests.NfePutRequestBody;
+import onboardingMarcos.tinelli.util.Verifications;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -29,10 +30,8 @@ public class NfeService {
   }
 
   public Nfe save(NfePostRequestBody nfePostRequestBody) {
-    UUID uuid;
-    do {
-      uuid = UUID.randomUUID();
-    } while (nfeRepository.findById(uuid).isPresent());
+    Verifications.verificationNFEPOST(nfePostRequestBody);
+    UUID uuid = UUID.randomUUID();
     return nfeRepository.save(
         new Nfe(
             uuid,
@@ -49,6 +48,7 @@ public class NfeService {
   }
 
   public void replace(NfePutRequestBody nfePutRequestBody) {
+    Verifications.verificationNFEPUT(nfePutRequestBody);
     Nfe savedNfe = findByIdOrThrowBadRequestException(nfePutRequestBody.getId());
     nfeRepository.save(
         new Nfe(

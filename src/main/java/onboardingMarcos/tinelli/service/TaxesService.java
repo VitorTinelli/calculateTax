@@ -36,7 +36,7 @@ public class TaxesService {
   }
 
   public Taxes save(TaxesPostRequestBody taxesPostRequestBody) {
-    Verifications.VerificationTaxesPOST(taxesPostRequestBody);
+    Verifications.verificationTaxesPOST(taxesPostRequestBody);
     return taxesRepository.save(
         new Taxes(
             lastTaxesID() + 1,
@@ -53,7 +53,7 @@ public class TaxesService {
 
   public void replace(TaxesPutRequestBody taxesPutRequestBody) {
     Taxes savedTaxes = findByIdOrThrowBadRequestException(taxesPutRequestBody.getId());
-    Verifications.VerificationTaxesPUT(taxesPutRequestBody);
+    Verifications.verificationTaxesPUT(taxesPutRequestBody);
     taxesRepository.save(
         new Taxes(
             savedTaxes.getId(),
