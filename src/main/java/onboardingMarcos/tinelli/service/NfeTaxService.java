@@ -48,15 +48,13 @@ public class NfeTaxService {
       if (!nfeTaxRepository.findByNfe(nfe).isEmpty()) {
         continue;
       }
-      
+
       for (Taxes taxes : taxesList) {
         Double difference =
             nfe.getValue() * ((taxes.getAliquot() + selicController.getSelicPerMonth()) / 100);
         Double taxedValue = nfe.getValue() + difference;
-        log.info(
-            "Taxed value: " + ((taxes.getAliquot() + selicController.getSelicPerMonth()) / 100));
-
         UUID uuid = UUID.randomUUID();
+
         nfeTaxRepository.save(
             new NfeTax(uuid, nfe, taxes, Double.parseDouble(formatter.format(taxedValue)),
                 Double.parseDouble(formatter.format(taxedValue - nfe.getValue())),
@@ -64,6 +62,11 @@ public class NfeTaxService {
       }
     }
     return ResponseEntity.ok(nfeTaxRepository.findAll());
+  }
+
+  public ResponseEntity<List<NfeTax>> getByNfeId(String uuid) {
+    return ResponseEntity.ok(nfeTaxRepository.findByNfe(
+        nfeService.findByIdOrThrowBadRequestException(UUID.fromString(uuid))));
   }
 }
 
