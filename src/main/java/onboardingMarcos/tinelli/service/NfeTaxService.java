@@ -53,10 +53,11 @@ public class NfeTaxService {
         Double difference =
             nfe.getValue() * ((taxes.getAliquot() + selicController.getSelicPerMonth()) / 100);
         Double taxedValue = nfe.getValue() + difference;
-        UUID uuid = UUID.randomUUID();
+
 
         nfeTaxRepository.save(
-            new NfeTax(uuid, nfe, taxes, Double.parseDouble(formatter.format(taxedValue)),
+            new NfeTax(UUID.randomUUID(), nfe, taxes,
+                Double.parseDouble(formatter.format(taxedValue)),
                 Double.parseDouble(formatter.format(taxedValue - nfe.getValue())),
                 nfe.getDate().getMonth().toString(), nfe.getDate().getYear()));
       }

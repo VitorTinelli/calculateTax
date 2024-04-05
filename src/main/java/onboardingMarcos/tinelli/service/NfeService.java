@@ -31,10 +31,9 @@ public class NfeService {
 
   public Nfe save(NfePostRequestBody nfePostRequestBody) {
     Verifications.verificationNFEPOST(nfePostRequestBody);
-    UUID uuid = UUID.randomUUID();
     return nfeRepository.save(
         new Nfe(
-            uuid,
+            UUID.randomUUID(),
             nfePostRequestBody.getNumber(),
             nfePostRequestBody.getDate(),
             nfePostRequestBody.getValue()
