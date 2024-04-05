@@ -1,16 +1,17 @@
 package onboardingMarcos.tinelli.requests;
 
 import java.util.Objects;
+import java.util.UUID;
 
 public class UserPutRequestBody {
 
-  private Long id;
+  private UUID id;
   private String name;
   private Long cpf;
   private String password;
   private String userType;
 
-  public UserPutRequestBody(Long id, String name, Long cpf, String password, String userType) {
+  public UserPutRequestBody(UUID id, String name, Long cpf, String password, String userType) {
     this.id = id;
     this.name = name;
     this.cpf = cpf;
@@ -22,11 +23,11 @@ public class UserPutRequestBody {
 
   }
 
-  public Long getId() {
+  public UUID getId() {
     return id;
   }
 
-  public void setId(Long id) {
+  public void setId(UUID id) {
     this.id = id;
   }
 

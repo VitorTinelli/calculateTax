@@ -2,6 +2,7 @@ package onboardingMarcos.tinelli.controller;
 
 
 import java.util.List;
+import java.util.UUID;
 import onboardingMarcos.tinelli.domain.Users;
 import onboardingMarcos.tinelli.requests.UserPostRequestBody;
 import onboardingMarcos.tinelli.requests.UserPutRequestBody;
@@ -26,7 +27,7 @@ public class UserController {
   }
 
   @GetMapping("/{id}")
-  public ResponseEntity<Users> findById(@PathVariable Long id) {
+  public ResponseEntity<Users> findById(@PathVariable UUID id) {
     return ResponseEntity.ok(userService.findByIdOrThrowBadRequestException(id));
   }
 
@@ -36,7 +37,7 @@ public class UserController {
   }
 
   @DeleteMapping(path = "/{id}")
-  public ResponseEntity<Void> delete(@PathVariable Long id) {
+  public ResponseEntity<Void> delete(@PathVariable UUID id) {
     userService.delete(id);
     return ResponseEntity.noContent().build();
   }

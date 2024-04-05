@@ -6,40 +6,37 @@
 //import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 //import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 //import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-//import org.springframework.security.core.userdetails.UserDetailsService;
-//import org.springframework.security.crypto.password.NoOpPasswordEncoder;
+//import org.springframework.security.core.userdetails.User;
+//import org.springframework.security.core.userdetails.UserDetails;
+//import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 //import org.springframework.security.crypto.password.PasswordEncoder;
+//import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 //import org.springframework.security.web.SecurityFilterChain;
-//import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
 //
 //@Configuration
 //@EnableWebSecurity
 //@EnableGlobalMethodSecurity(prePostEnabled = true)
 //public class SecurityConfig {
 //
-//  private final UserDetailsService userDetailsService;
-//
-//  public SecurityConfig(UserDetailsService userDetailsService) {
-//    this.userDetailsService = userDetailsService;
-//  }
-//
-//
 //  @Bean
 //  public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
 //    http
-//        .csrf().csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
-//        .and()
-//        .authorizeRequests(authorizeRequests ->
-//            authorizeRequests
-//                .anyRequest().authenticated()
-//        )
+//        .csrf(Customizer.withDefaults())
+//        .authorizeHttpRequests(authorize -> authorize
+//            .anyRequest().authenticated())
 //        .httpBasic(Customizer.withDefaults())
-//        .userDetailsService(userDetailsService)
 //        .formLogin(Customizer.withDefaults());
 //    return http.build();
 //  }
 //
-//  public PasswordEncoder passwordEncoder() {
-//    return NoOpPasswordEncoder.getInstance();
+//
+//  @Bean
+//  public InMemoryUserDetailsManager userDetailsService() {
+//    PasswordEncoder encoder = PasswordEncoderFactories.createDelegatingPasswordEncoder();
+//    UserDetails user = User.withUsername("diego")
+//        .password(encoder.encode("maradona"))
+//        .roles("USER")
+//        .build();
+//    return new InMemoryUserDetailsManager(user);
 //  }
 //}

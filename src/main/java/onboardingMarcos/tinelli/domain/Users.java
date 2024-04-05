@@ -4,12 +4,13 @@ package onboardingMarcos.tinelli.domain;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import java.util.Objects;
+import java.util.UUID;
 
 @Entity
 public class Users {
 
   @Id
-  private long id;
+  private UUID id;
 
   private String name;
 
@@ -17,25 +18,24 @@ public class Users {
 
   private String password;
 
-  private String userType;
+  private String authorities;
 
-  public Users(long id, String name, long cpf, String password, String userType) {
+  public Users(UUID id, String name, long cpf, String password, String authorities) {
     this.id = id;
     this.name = name;
     this.cpf = cpf;
     this.password = password;
-    this.userType = userType;
+    this.authorities = authorities;
   }
 
   public Users() {
-
   }
 
-  public long getId() {
+  public UUID getId() {
     return id;
   }
 
-  public void setId(long id) {
+  public void setId(UUID id) {
     this.id = id;
   }
 
@@ -64,12 +64,12 @@ public class Users {
   }
 
 
-  public String getUserType() {
-    return userType;
+  public String getAuthorities() {
+    return authorities;
   }
 
-  public void setUserType(String userType) {
-    this.userType = userType;
+  public void setAuthorities(String authorities) {
+    this.authorities = authorities;
   }
 
   @Override
@@ -82,17 +82,7 @@ public class Users {
     }
     Users users = (Users) o;
     return id == users.id && cpf == users.cpf && Objects.equals(name, users.name) && Objects.equals(
-        password, users.password) && Objects.equals(userType, users.userType);
+        password, users.password) && Objects.equals(authorities, users.authorities);
   }
 
-  @Override
-  public int hashCode() {
-    return Objects.hash(id, name, cpf, password, userType);
-  }
-
-  @Override
-  public String toString() {
-    return "Users{" + "id=" + id + ", name='" + name + '\'' + ", cpf=" + cpf + ", password='"
-        + password + '\'' + ", userType='" + userType + '\'' + '}';
-  }
 }

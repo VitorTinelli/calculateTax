@@ -1,6 +1,7 @@
 package onboardingMarcos.tinelli.controller;
 
 import java.util.List;
+import java.util.UUID;
 import onboardingMarcos.tinelli.domain.Taxes;
 import onboardingMarcos.tinelli.requests.TaxesPostRequestBody;
 import onboardingMarcos.tinelli.requests.TaxesPutRequestBody;
@@ -24,7 +25,7 @@ public class TaxesController {
   }
 
   @GetMapping("/{id}")
-  public ResponseEntity<Taxes> findById(@PathVariable Long id) {
+  public ResponseEntity<Taxes> findById(@PathVariable UUID id) {
     return ResponseEntity.ok(taxesService.findByIdOrThrowBadRequestException(id));
   }
 
@@ -34,7 +35,7 @@ public class TaxesController {
   }
 
   @DeleteMapping("/{id}")
-  public ResponseEntity<Void> delete(@PathVariable Long id) {
+  public ResponseEntity<Void> delete(@PathVariable UUID id) {
     taxesService.delete(id);
     return ResponseEntity.noContent().build();
   }

@@ -1,6 +1,7 @@
 package onboardingMarcos.tinelli.service;
 
 import java.util.List;
+import java.util.UUID;
 import onboardingMarcos.tinelli.domain.Users;
 import onboardingMarcos.tinelli.exceptions.BadRequestException;
 import onboardingMarcos.tinelli.repository.UsersRepository;
@@ -24,7 +25,7 @@ public class UserService {
     return usersRepository.findAll();
   }
 
-  public Users findByIdOrThrowBadRequestException(Long id) {
+  public Users findByIdOrThrowBadRequestException(UUID id) {
     return usersRepository.findById(id)
         .orElseThrow(() -> new BadRequestException(
             "User not Found, Please verify the provided ID"));
@@ -35,13 +36,6 @@ public class UserService {
         .orElse(null);
   }
 
-  public Long lastUserID() {
-    List<Users> users = usersRepository.findAll();
-    Users lastUser = users.get(users.size() - 1);
-    return lastUser.getId();
-  }
-
-
   public Users save(UserPostRequestBody user) {
     if (findByCPForReturnNull(user.getCpf()) != null) {
       throw new BadRequestException("CPF already registered");
@@ -50,7 +44,7 @@ public class UserService {
     try {
       return usersRepository.save(
           new Users(
-              lastUserID() + 1,
+              UUID.randomUUID(),
               user.getName(),
               user.getCpf(),
               user.getPassword(),
@@ -63,7 +57,7 @@ public class UserService {
     }
   }
 
-  public void delete(Long id) {
+  public void delete(UUID id) {
     findByIdOrThrowBadRequestException(id);
     usersRepository.deleteById(id);
   }

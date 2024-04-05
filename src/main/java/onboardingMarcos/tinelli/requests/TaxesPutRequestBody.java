@@ -1,24 +1,25 @@
 package onboardingMarcos.tinelli.requests;
 
 import java.util.Objects;
+import java.util.UUID;
 
 public class TaxesPutRequestBody {
 
-  private Long id;
+  private UUID id;
   private String name;
   private Double aliquot;
 
-  public TaxesPutRequestBody(Long id, String name, Double aliquot) {
+  public TaxesPutRequestBody(UUID id, String name, Double aliquot) {
     this.id = id;
     this.name = name;
     this.aliquot = aliquot;
   }
 
-  public Long getId() {
+  public UUID getId() {
     return id;
   }
 
-  public void setId(Long id) {
+  public void setId(UUID id) {
     this.id = id;
   }
 
@@ -51,17 +52,4 @@ public class TaxesPutRequestBody {
         && Objects.equals(aliquot, that.aliquot);
   }
 
-  @Override
-  public int hashCode() {
-    return Objects.hash(id, name, aliquot);
-  }
-
-  @Override
-  public String toString() {
-    return "TaxesPutRequestBody{" +
-        "id=" + id +
-        ", name='" + name + '\'' +
-        ", aliquot=" + aliquot +
-        '}';
-  }
 }
