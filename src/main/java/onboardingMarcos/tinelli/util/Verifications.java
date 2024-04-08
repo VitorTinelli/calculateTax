@@ -2,17 +2,12 @@ package onboardingMarcos.tinelli.util;
 
 import java.time.LocalDate;
 import java.util.Objects;
-import lombok.extern.log4j.Log4j2;
 import onboardingMarcos.tinelli.exceptions.BadRequestException;
-import onboardingMarcos.tinelli.repository.NfeRepository;
 import onboardingMarcos.tinelli.requests.*;
 
-@Log4j2
+
 public class Verifications {
-
-  private Verifications(NfeRepository nfeRepository) {
-  }
-
+  
   public static void verificationUserPOST(UserPostRequestBody user) {
     if (user.getName() == null || user.getPassword() == null || user.getUserType() == null
         || user.getName().isBlank() || user.getPassword().isBlank() || user.getUserType()

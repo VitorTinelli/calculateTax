@@ -27,7 +27,7 @@ public class TaxesPostRequestBody {
     return aliquot;
   }
 
-  public void setAliquot(double aliquot) {
+  public void setAliquot(Double aliquot) {
     this.aliquot = aliquot;
   }
 

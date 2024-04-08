@@ -4,6 +4,7 @@ import java.util.Objects;
 import java.util.UUID;
 
 public class UserPutRequestBody {
+
   private UUID id;
   private String name;
   private Long cpf;
