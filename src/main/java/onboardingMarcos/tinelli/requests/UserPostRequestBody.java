@@ -37,7 +37,7 @@ public class UserPostRequestBody {
   }
 
   public String getUsername() {
-    return name.toLowerCase().trim().replace(" ", "");
+    return cpf.toString();
   }
 
   public void setUsername(String username) {

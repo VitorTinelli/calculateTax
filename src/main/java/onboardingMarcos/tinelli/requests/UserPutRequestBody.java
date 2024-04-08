@@ -4,20 +4,17 @@ import java.util.Objects;
 import java.util.UUID;
 
 public class UserPutRequestBody {
-
   private UUID id;
   private String name;
   private Long cpf;
-  private String username;
   private String password;
   private String userType;
 
-  public UserPutRequestBody(UUID id, String name, Long cpf, String username, String password,
+  public UserPutRequestBody(UUID id, String name, Long cpf, String password,
       String userType) {
     this.id = id;
     this.name = name;
     this.cpf = cpf;
-    this.username = username;
     this.password = password;
     this.userType = userType;
   }
@@ -50,14 +47,6 @@ public class UserPutRequestBody {
     this.cpf = cpf;
   }
 
-  public String getUsername() {
-    return username;
-  }
-
-  public void setUsername(String username) {
-    this.username = username;
-  }
-
   public String getPassword() {
     return password;
   }
@@ -84,14 +73,13 @@ public class UserPutRequestBody {
     }
     UserPutRequestBody that = (UserPutRequestBody) o;
     return Objects.equals(id, that.id) && Objects.equals(name, that.name)
-        && Objects.equals(cpf, that.cpf) && Objects.equals(username,
-        that.username) && Objects.equals(password, that.password)
+        && Objects.equals(cpf, that.cpf) && Objects.equals(password, that.password)
         && Objects.equals(userType, that.userType);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(id, name, cpf, username, password, userType);
+    return Objects.hash(id, name, cpf, password, userType);
   }
 
 }
