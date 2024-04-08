@@ -83,7 +83,7 @@ public class UserService implements UserDetailsService {
               savedUser.getId(),
               userPutRequestBody.getName(),
               userPutRequestBody.getCpf(),
-              userPutRequestBody.getUsername(),
+              savedUser.getUsername(),
               new BCryptPasswordEncoder().encode(userPutRequestBody.getPassword()),
               userPutRequestBody.getUserType().toLowerCase()
           )
