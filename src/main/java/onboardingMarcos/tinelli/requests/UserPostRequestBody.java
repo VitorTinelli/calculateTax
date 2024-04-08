@@ -6,6 +6,7 @@ public class UserPostRequestBody {
 
   private String name;
   private Long cpf;
+  private String username;
   private String password;
   private String userType;
 
@@ -35,6 +36,14 @@ public class UserPostRequestBody {
     this.cpf = cpf;
   }
 
+  public String getUsername() {
+    return name.toLowerCase().trim().replace(" ", "");
+  }
+
+  public void setUsername(String username) {
+    this.username = username;
+  }
+
   public String getPassword() {
     return password;
   }
@@ -61,22 +70,12 @@ public class UserPostRequestBody {
     }
     UserPostRequestBody that = (UserPostRequestBody) o;
     return Objects.equals(name, that.name) && Objects.equals(cpf, that.cpf)
-        && Objects.equals(password, that.password) && Objects.equals(userType,
-        that.userType);
+        && Objects.equals(username, that.username) && Objects.equals(password,
+        that.password) && Objects.equals(userType, that.userType);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(name, cpf, password, userType);
-  }
-
-  @Override
-  public String toString() {
-    return "UserPostRequestBody{" +
-        "name='" + name + '\'' +
-        ", cpf=" + cpf +
-        ", password='" + password + '\'' +
-        ", userType='" + userType + '\'' +
-        '}';
+    return Objects.hash(name, cpf, username, password, userType);
   }
 }

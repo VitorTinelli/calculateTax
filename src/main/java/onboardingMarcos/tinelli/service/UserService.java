@@ -1,18 +1,24 @@
 package onboardingMarcos.tinelli.service;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
+import lombok.extern.log4j.Log4j2;
 import onboardingMarcos.tinelli.domain.Users;
 import onboardingMarcos.tinelli.exceptions.BadRequestException;
 import onboardingMarcos.tinelli.repository.UsersRepository;
 import onboardingMarcos.tinelli.requests.UserPostRequestBody;
 import onboardingMarcos.tinelli.requests.UserPutRequestBody;
 import onboardingMarcos.tinelli.util.Verifications;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 
 @Service
-public class UserService {
+@Log4j2
+public class UserService implements UserDetailsService {
 
   private final UsersRepository usersRepository;
 
@@ -47,6 +53,7 @@ public class UserService {
               UUID.randomUUID(),
               user.getName(),
               user.getCpf(),
+              user.getUsername(),
               user.getPassword(),
               user.getUserType().toLowerCase()
           )
@@ -75,6 +82,7 @@ public class UserService {
               savedUser.getId(),
               userPutRequestBody.getName(),
               userPutRequestBody.getCpf(),
+              userPutRequestBody.getUsername(),
               userPutRequestBody.getPassword(),
               userPutRequestBody.getUserType().toLowerCase()
           )
@@ -83,5 +91,11 @@ public class UserService {
       throw new BadRequestException(
           "Error updating user, please try again later or contact the administrator");
     }
+  }
+
+  @Override
+  public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+    return Optional.ofNullable(usersRepository.findByUsername(username))
+        .orElseThrow(() -> new UsernameNotFoundException("User not found"));
   }
 }

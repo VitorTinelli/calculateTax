@@ -3,16 +3,22 @@ package onboardingMarcos.tinelli.domain;
 
 import javax.persistence.Entity;
 import javax.persistence.Id;
-import java.util.Objects;
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.UUID;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 
 @Entity
-public class Users {
+public class Users implements UserDetails {
 
   @Id
   private UUID id;
 
   private String name;
+
+  private String username;
 
   private long cpf;
 
@@ -20,9 +26,11 @@ public class Users {
 
   private String authorities;
 
-  public Users(UUID id, String name, long cpf, String password, String authorities) {
+  public Users(UUID id, String name, long cpf, String username, String password,
+      String authorities) {
     this.id = id;
     this.name = name;
+    this.username = username;
     this.cpf = cpf;
     this.password = password;
     this.authorities = authorities;
@@ -47,6 +55,10 @@ public class Users {
     this.name = name;
   }
 
+  public void setUsername() {
+    this.username = username;
+  }
+
   public long getCpf() {
     return cpf;
   }
@@ -55,17 +67,10 @@ public class Users {
     this.cpf = cpf;
   }
 
-  public String getPassword() {
-    return password;
-  }
-
-  public void setPassword(String password) {
-    this.password = password;
-  }
-
-
-  public String getAuthorities() {
-    return authorities;
+  @Override
+  public Collection<? extends GrantedAuthority> getAuthorities() {
+    SimpleGrantedAuthority authority = new SimpleGrantedAuthority(authorities.toLowerCase());
+    return Arrays.asList(authority);
   }
 
   public void setAuthorities(String authorities) {
@@ -73,16 +78,36 @@ public class Users {
   }
 
   @Override
-  public boolean equals(Object o) {
-    if (this == o) {
-      return true;
-    }
-    if (o == null || getClass() != o.getClass()) {
-      return false;
-    }
-    Users users = (Users) o;
-    return id == users.id && cpf == users.cpf && Objects.equals(name, users.name) && Objects.equals(
-        password, users.password) && Objects.equals(authorities, users.authorities);
+  public String getPassword() {
+    return this.password;
   }
 
+  public void setPassword(String password) {
+    this.password = password;
+  }
+
+  @Override
+  public String getUsername() {
+    return this.username;
+  }
+
+  @Override
+  public boolean isAccountNonExpired() {
+    return true;
+  }
+
+  @Override
+  public boolean isAccountNonLocked() {
+    return true;
+  }
+
+  @Override
+  public boolean isCredentialsNonExpired() {
+    return true;
+  }
+
+  @Override
+  public boolean isEnabled() {
+    return true;
+  }
 }
