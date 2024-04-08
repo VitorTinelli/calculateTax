@@ -186,7 +186,7 @@ class UserControllerTest {
   }
 
   @Test
-  @DisplayName("put throws BadRequestException when user name is null, empty or blank")
+  @DisplayName("put throws BadRequestException when CPF is already registered")
   void put_ThrowsBadRequestException_WhenUserCPFAlreadyRegistered() {
     doThrow(new BadRequestException("CPF already registered")).when(userService)
         .replace(userPutRequestBody);

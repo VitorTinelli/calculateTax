@@ -109,7 +109,7 @@ class TaxesControllerTest {
   }
 
   @Test
-  @DisplayName("post saves tax when successful")
+  @DisplayName("post Return BadRequestException When TaxNameIsBlank")
   void post_ReturnAnBadRequestException_WhenTaxNameIsBlank() {
     taxesPostRequestBody.setName(" ");
     when(taxesService.save(taxesPostRequestBody)).thenThrow(
