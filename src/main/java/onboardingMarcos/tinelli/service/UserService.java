@@ -13,6 +13,7 @@ import onboardingMarcos.tinelli.util.Verifications;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 
@@ -54,7 +55,7 @@ public class UserService implements UserDetailsService {
               user.getName(),
               user.getCpf(),
               user.getUsername(),
-              user.getPassword(),
+              new BCryptPasswordEncoder().encode(user.getPassword()),
               user.getUserType().toLowerCase()
           )
       );
@@ -83,7 +84,7 @@ public class UserService implements UserDetailsService {
               userPutRequestBody.getName(),
               userPutRequestBody.getCpf(),
               userPutRequestBody.getUsername(),
-              userPutRequestBody.getPassword(),
+              new BCryptPasswordEncoder().encode(userPutRequestBody.getPassword()),
               userPutRequestBody.getUserType().toLowerCase()
           )
       );
