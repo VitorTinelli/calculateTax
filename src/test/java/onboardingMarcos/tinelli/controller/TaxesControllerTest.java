@@ -11,6 +11,7 @@ import onboardingMarcos.tinelli.requests.TaxesPutRequestBody;
 import onboardingMarcos.tinelli.service.TaxesService;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -52,6 +53,7 @@ class TaxesControllerTest {
   }
 
   @Test
+  @DisplayName("listAll returns list of taxes when successful")
   void listAll_ReturnAllTaxes_WhenSuccessful() {
     when(taxesService.listAll()).thenReturn(List.of(tax));
     ResponseEntity<List<Taxes>> taxes = taxesController.listAll();
@@ -62,6 +64,7 @@ class TaxesControllerTest {
   }
 
   @Test
+  @DisplayName("listAll returns empty list when any tax exists")
   void listAll_ReturnEmptyList_WhenTaxesNotExist() {
     when(taxesService.listAll()).thenReturn(Collections.emptyList());
     ResponseEntity<List<Taxes>> taxes = taxesController.listAll();
@@ -72,6 +75,7 @@ class TaxesControllerTest {
   }
 
   @Test
+  @DisplayName("findById returns tax when successful")
   void findById_ReturnTax_WhenSuccessful() {
     when(taxesService.findByIdOrThrowBadRequestException(tax.getId())).thenReturn(tax);
     ResponseEntity<Taxes> taxes = taxesController.findById(tax.getId());
@@ -82,6 +86,7 @@ class TaxesControllerTest {
   }
 
   @Test
+  @DisplayName("findById returns an exception when tax not exist")
   void findByID_ReturnAnException_WhenTaxNotExist() {
     when(taxesService.findByIdOrThrowBadRequestException(tax.getId())).thenThrow(
         new BadRequestException("Tax not found"));
@@ -92,7 +97,8 @@ class TaxesControllerTest {
   }
 
   @Test
-  void save_ReturnTax_WhenSuccessful() {
+  @DisplayName("findById returns an exception when tax id is null")
+  void post_ReturnTax_WhenSuccessful() {
     when(taxesService.save(taxesPostRequestBody)).thenReturn(tax);
     ResponseEntity<Taxes> taxes = taxesController.save(taxesPostRequestBody);
 
@@ -103,7 +109,8 @@ class TaxesControllerTest {
   }
 
   @Test
-  void save_ReturnAnBadRequestException_WhenTaxNameIsBlank() {
+  @DisplayName("post saves tax when successful")
+  void post_ReturnAnBadRequestException_WhenTaxNameIsBlank() {
     taxesPostRequestBody.setName(" ");
     when(taxesService.save(taxesPostRequestBody)).thenThrow(
         new BadRequestException("Tax name cannot be blank"));
@@ -115,7 +122,8 @@ class TaxesControllerTest {
   }
 
   @Test
-  void save_ThrowsBadRequestException_WhenTaxIsLesserThanZero() {
+  @DisplayName("post saves tax when successful")
+  void post_ThrowsBadRequestException_WhenTaxIsLesserThanZero() {
     taxesPostRequestBody.setAliquot(0D);
     when(taxesService.save(taxesPostRequestBody)).thenThrow(
         new BadRequestException("Tax aliquot less than 0"));
@@ -127,6 +135,7 @@ class TaxesControllerTest {
   }
 
   @Test
+  @DisplayName("delete deletes tax when successful")
   void delete_DeletesTaxes_WhenSuccessful() {
     doNothing().when(taxesService).delete(tax.getId());
 
@@ -136,6 +145,7 @@ class TaxesControllerTest {
   }
 
   @Test
+  @DisplayName("delete throws BadRequestException when tax not exist")
   void delete_ThrowsBadRequestException_WhenTaxNotExist() {
     doThrow(new BadRequestException("Tax not found")).when(taxesService).delete(tax.getId());
 
@@ -145,6 +155,7 @@ class TaxesControllerTest {
   }
 
   @Test
+  @DisplayName("delete throws BadRequestException when tax id is null")
   void delete_ThrowsBadRequestException_WhenIdIsNull() {
     doThrow(new BadRequestException("Tax not found")).when(taxesService).delete(null);
 
@@ -154,7 +165,8 @@ class TaxesControllerTest {
   }
 
   @Test
-  void replace_ReplaceTax_WhenSuccessful() {
+  @DisplayName("put replaces tax when successful")
+  void put_ReplaceTax_WhenSuccessful() {
     doNothing().when(taxesService).replace(taxesPutRequestBody);
 
     Assertions.assertDoesNotThrow(() -> taxesController.replace(taxesPutRequestBody));
@@ -163,7 +175,8 @@ class TaxesControllerTest {
   }
 
   @Test
-  void replace_ThrowsError_WhenIdIsnull() {
+  @DisplayName("put throws BadRequestException when tax not exist")
+  void put_ThrowsError_WhenIdIsnull() {
     taxesPutRequestBody.setId(null);
     doThrow(new BadRequestException("Tax not found")).when(taxesService)
         .replace(taxesPutRequestBody);
@@ -174,7 +187,8 @@ class TaxesControllerTest {
   }
 
   @Test
-  void replace_ThrowsBadRequestException_WhenTaxNameIsBlank() {
+  @DisplayName("put throws BadRequestException when tax name is blank")
+  void put_ThrowsBadRequestException_WhenTaxNameIsBlank() {
     taxesPutRequestBody.setName(" ");
     doThrow(new BadRequestException("Tax name cannot be blank")).when(taxesService)
         .replace(taxesPutRequestBody);
@@ -186,7 +200,8 @@ class TaxesControllerTest {
   }
 
   @Test
-  void replace_ThrowsBadRequestException_WhenTaxAliquotIsLesserThanZero() {
+  @DisplayName("put throws BadRequestException when tax aliquot is lesser than 0")
+  void put_ThrowsBadRequestException_WhenTaxAliquotIsLesserThanZero() {
     taxesPutRequestBody.setAliquot(0D);
     doThrow(new BadRequestException("Tax aliquot cannot be lesser than 0")).when(taxesService)
         .replace(taxesPutRequestBody);
@@ -196,5 +211,5 @@ class TaxesControllerTest {
     Assertions.assertEquals(Collections.emptyList(), taxesService.listAll());
     verify(taxesService).replace(taxesPutRequestBody);
   }
-  
+
 }

@@ -3,7 +3,6 @@ package onboardingMarcos.tinelli.service;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
-import lombok.extern.log4j.Log4j2;
 import onboardingMarcos.tinelli.domain.Users;
 import onboardingMarcos.tinelli.exceptions.BadRequestException;
 import onboardingMarcos.tinelli.repository.UsersRepository;
@@ -18,7 +17,6 @@ import org.springframework.stereotype.Service;
 
 
 @Service
-@Log4j2
 public class UserService implements UserDetailsService {
 
   private final UsersRepository usersRepository;

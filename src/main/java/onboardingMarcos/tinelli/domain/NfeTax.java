@@ -17,13 +17,13 @@ public class NfeTax {
   @OneToOne
   private Taxes taxes;
 
-  private double valueWithTax;
+  private Double valueWithTax;
 
-  private double difference;
+  private Double difference;
 
   private String month;
 
-  private double year;
+  private Double year;
 
   public NfeTax(UUID id, Nfe nfe, Taxes taxes, double valueWithTax, double difference, String month,
       double year) {

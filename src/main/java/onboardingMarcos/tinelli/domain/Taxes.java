@@ -14,7 +14,7 @@ public class Taxes {
 
   private String name;
 
-  private double aliquot;
+  private Double aliquot;
 
   public Taxes(UUID id, String name, double aliquot) {
     this.id = id;

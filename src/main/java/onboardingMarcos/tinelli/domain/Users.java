@@ -20,7 +20,7 @@ public class Users implements UserDetails {
 
   private String username;
 
-  private long cpf;
+  private Long cpf;
 
   private String password;
 
@@ -38,6 +38,7 @@ public class Users implements UserDetails {
 
   public Users() {
   }
+
 
   public UUID getId() {
     return id;
