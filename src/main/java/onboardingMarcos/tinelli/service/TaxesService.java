@@ -31,6 +31,9 @@ public class TaxesService {
   }
 
   public Taxes save(TaxesPostRequestBody taxesPostRequestBody) {
+    if ((taxesPostRequestBody.getAliquot() == 0.0D || taxesPostRequestBody.getName() == null)) {
+      throw new BadRequestException("You have to fill all fields");
+    }
     Verifications.verificationTaxesPOST(taxesPostRequestBody);
     return taxesRepository.save(
         new Taxes(
