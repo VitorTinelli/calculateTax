@@ -1,4 +1,4 @@
-package onboardingMarcos.tinelli.Service;
+package onboardingMarcos.tinelli.service;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
@@ -12,9 +12,6 @@ import onboardingMarcos.tinelli.domain.NfeTax;
 import onboardingMarcos.tinelli.domain.Taxes;
 import onboardingMarcos.tinelli.exceptions.BadRequestException;
 import onboardingMarcos.tinelli.repository.NfeTaxRepository;
-import onboardingMarcos.tinelli.service.NfeService;
-import onboardingMarcos.tinelli.service.NfeTaxService;
-import onboardingMarcos.tinelli.service.TaxesService;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -88,8 +85,9 @@ class NfeTaxServiceTest {
   void listByNfeId_ThrowBadRequestException_WhenNfeNotFound() {
     when(nfeService.findByIdOrThrowBadRequestException(any(UUID.class))).thenThrow(
         new BadRequestException("NFe not Found, Please verify the provided ID"));
-   
+
     Assertions.assertThrows(BadRequestException.class,
         () -> nfeTaxService.getByNfeId(nfe.getId().toString()));
   }
+
 }

@@ -1,4 +1,4 @@
-package onboardingMarcos.tinelli.Service;
+package onboardingMarcos.tinelli.service;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
@@ -13,7 +13,6 @@ import onboardingMarcos.tinelli.exceptions.BadRequestException;
 import onboardingMarcos.tinelli.repository.NfeRepository;
 import onboardingMarcos.tinelli.requests.NfePostRequestBody;
 import onboardingMarcos.tinelli.requests.NfePutRequestBody;
-import onboardingMarcos.tinelli.service.NfeService;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
