@@ -57,9 +57,6 @@ public class Verifications {
   }
 
   public static void verificationNFEPOST(NfePostRequestBody nfe) {
-    if (nfe.getNumber().toString().isBlank()) {
-      throw new BadRequestException("You have to fill all fields");
-    }
     if (nfe.getDate().isAfter(LocalDate.now())) {
       throw new BadRequestException("Date must be before or today");
     }
