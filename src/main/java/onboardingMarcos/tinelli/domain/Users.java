@@ -56,10 +56,6 @@ public class Users implements UserDetails {
     this.name = name;
   }
 
-  public void setUsername() {
-    this.username = username;
-  }
-
   public long getCpf() {
     return cpf;
   }
@@ -90,6 +86,10 @@ public class Users implements UserDetails {
   @Override
   public String getUsername() {
     return this.username;
+  }
+
+  public void setUsername(String username) {
+    this.username = username;
   }
 
   @Override
