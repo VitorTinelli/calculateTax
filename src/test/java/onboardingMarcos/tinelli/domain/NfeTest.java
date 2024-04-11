@@ -4,6 +4,7 @@ import java.time.LocalDate;
 import java.util.UUID;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -23,6 +24,7 @@ class NfeTest {
   }
 
   @Test
+  @DisplayName("Test all getters and setters methods")
   void testGettersAndSetters() {
     Assertions.assertAll(() -> {
       nfe.setDate(LocalDate.now());
@@ -40,6 +42,7 @@ class NfeTest {
   }
 
   @Test
+  @DisplayName("Test the constructor method")
   void testConstructor() {
     Assertions.assertDoesNotThrow(() -> new Nfe(id, 124914L, LocalDate.now(), 950.00D));
   }

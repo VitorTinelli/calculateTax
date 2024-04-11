@@ -3,6 +3,7 @@ package onboardingMarcos.tinelli.domain;
 import java.util.UUID;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -21,6 +22,7 @@ public class UsersTest {
   }
 
   @Test
+  @DisplayName("Test all getters and setters methods")
   void testGettersAndSetters() {
     Assertions.assertAll(
         () -> {
@@ -47,7 +49,21 @@ public class UsersTest {
           users.setAuthorities("gerente");
           Assertions.assertDoesNotThrow(() -> users.getAuthorities());
         }
+    );
+  }
 
+  @Test
+  @DisplayName("Test the constructor method")
+  void testConstructor() {
+    Assertions.assertDoesNotThrow(
+        () -> new Users(
+            id,
+            "Marcos",
+            12345678910L,
+            "12345678910",
+            "senhasecreta",
+            "gerente"
+        )
     );
   }
 }

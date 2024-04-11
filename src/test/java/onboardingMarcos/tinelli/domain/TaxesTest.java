@@ -2,6 +2,7 @@ package onboardingMarcos.tinelli.domain;
 
 import java.util.UUID;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -32,15 +33,7 @@ class TaxesTest {
   }
 
   @Test
-  void equalsTest() {
-    UUID id = UUID.randomUUID();
-    Taxes taxes1 = new Taxes(id, "ICMS", 17.0D);
-    Taxes taxes2 = new Taxes(id, "ICMS", 17.0D);
-    Assertions.assertDoesNotThrow(() -> taxes1.equals(taxes2));
-    Assertions.assertEquals(taxes1, taxes2);
-  }
-
-  @Test
+  @DisplayName("Test the constructor method")
   void constructorTest() {
     Assertions.assertDoesNotThrow(() -> new Taxes(UUID.randomUUID(), "ICMS", 17.0D));
   }

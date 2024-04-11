@@ -1,12 +1,9 @@
 package onboardingMarcos.tinelli.services;
 
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 import onboardingMarcos.tinelli.controller.SelicController;
 import onboardingMarcos.tinelli.domain.Nfe;
 import onboardingMarcos.tinelli.domain.NfeTax;
@@ -18,6 +15,7 @@ import onboardingMarcos.tinelli.service.NfeTaxService;
 import onboardingMarcos.tinelli.service.TaxesService;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -56,6 +54,7 @@ class NfeTaxServiceTest {
   }
 
   @Test
+  @DisplayName("List all returns a NFE list when successful")
   void listAll_ReturnAllNfeTax_WhenSuccessful() {
     when(nfeTaxRepository.findAll()).thenReturn(List.of(nfeTax));
     ResponseEntity<List<NfeTax>> savedNfeTax = nfeTaxService.listAll();
@@ -63,12 +62,14 @@ class NfeTaxServiceTest {
   }
 
   @Test
+  @DisplayName("List all returns an empty list when no NFE is found")
   void listAll_ReturnEmptyList_WhenNfeNotFound() {
     when(nfeTaxRepository.findAll()).thenReturn(Collections.emptyList());
     Assertions.assertTrue(nfeTaxService.listAll().getBody().isEmpty());
   }
 
   @Test
+  @DisplayName("List by Nfe ID return a list of NfeTax when successful")
   void listByNfeId_ReturnListOfNfeTax_WhenSuccessful() {
     when(nfeService.findByIdOrThrowBadRequestException(nfe.getId())).thenReturn(nfe);
     when(nfeTaxRepository.findByNfe(nfe)).thenReturn(List.of(nfeTax));
@@ -78,6 +79,7 @@ class NfeTaxServiceTest {
   }
 
   @Test
+  @DisplayName("List by Nfe ID return an empty list when no NfeTax is found")
   void listByNfeId_ThrowBadRequestException_WhenNfeNotFound() {
     when(nfeService.findByIdOrThrowBadRequestException(any(UUID.class))).thenThrow(
         new BadRequestException("NFe not Found, Please verify the provided ID"));
@@ -87,6 +89,7 @@ class NfeTaxServiceTest {
   }
 
   @Test
+  @DisplayName("Post returns a NfeTax when successful")
   void post_ReturnNfeTax_WhenSuccessful() {
     when(nfeService.listAll()).thenReturn(new ArrayList<>(List.of(nfe)));
     when(taxesService.listAll()).thenReturn(List.of(tax));
@@ -100,9 +103,22 @@ class NfeTaxServiceTest {
   }
 
   @Test
+  @DisplayName("Post throws BadRequestException when no NFE found")
   void post_ThrowBadRequestException_WhenNfeNotFound() {
     when(nfeService.listAll()).thenReturn(Collections.emptyList());
     Assertions.assertThrows(BadRequestException.class,
         () -> nfeTaxService.postEveryNfeWithoutTax());
+  }
+
+  @Test
+  @DisplayName("Post returns an empty list when every NFE has every TAX")
+  void post_ReturnEmptyList_WhenEveryNfeHasTax() {
+    when(nfeService.listAll()).thenReturn(new ArrayList<>(List.of(nfe)));
+    when(taxesService.listAll()).thenReturn(List.of(tax));
+    when(nfeTaxRepository.findByNfeAndTaxes(nfe, tax)).thenReturn(Optional.of(nfeTax));
+    
+    Assertions.assertTrue(nfeTaxService.postEveryNfeWithoutTax().getBody().isEmpty());
+    verify(nfeTaxRepository).findByNfeAndTaxes(nfe, tax);
+    verify(nfeTaxRepository, never()).save(any(NfeTax.class));
   }
 }

@@ -14,6 +14,7 @@ import onboardingMarcos.tinelli.requests.UserPutRequestBody;
 import onboardingMarcos.tinelli.service.UserService;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -21,7 +22,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 @ExtendWith(MockitoExtension.class)
-public class UserServiceTest {
+class UserServiceTest {
 
   Users user;
   UserPostRequestBody userPostRequestBody;
@@ -61,6 +62,7 @@ public class UserServiceTest {
   }
 
   @Test
+  @DisplayName("List all returns a list of USERS when successful")
   void listAll_ReturnAllUsers_WhenSuccessful() {
     when(usersRepository.findAll()).thenReturn(List.of(user));
     List<Users> users = userService.listAll();
@@ -69,6 +71,7 @@ public class UserServiceTest {
   }
 
   @Test
+  @DisplayName("List all returns an EMPTY list when NO USERS found")
   void listAll_ReturnEmptyList_WhenUsersNotFound() {
     when(usersRepository.findAll()).thenReturn(List.of());
     List<Users> users = userService.listAll();
@@ -78,6 +81,7 @@ public class UserServiceTest {
   }
 
   @Test
+  @DisplayName("Find by id returns a USER when successful")
   void findById_ReturnUser_WhenSuccessful() {
     when(usersRepository.findById(user.getId())).thenReturn(Optional.of(user));
     Users userFound = userService.findByIdOrThrowBadRequestException(user.getId());
@@ -87,6 +91,7 @@ public class UserServiceTest {
   }
 
   @Test
+  @DisplayName("Find by id throws BadRequestException when NO USER found")
   void findById_ThrowBadRequestException_WhenUserNotFound() {
     when(usersRepository.findById(user.getId())).thenReturn(Optional.empty());
 
@@ -96,6 +101,7 @@ public class UserServiceTest {
   }
 
   @Test
+  @DisplayName("Save returns and save a USER when successful")
   void save_ReturnUser_WhenSuccessful() {
     when(usersRepository.save(any(Users.class))).thenReturn(user);
     when(usersRepository.findBycpf(userPostRequestBody.getCpf())).thenReturn(Optional.empty());
@@ -107,6 +113,7 @@ public class UserServiceTest {
   }
 
   @Test
+  @DisplayName("Save throws BadRequestException when CPF already registered")
   void save_ThrowBadRequestException_WhenCpfAlreadyRegistered() {
     when(usersRepository.findBycpf(userPostRequestBody.getCpf())).thenReturn(Optional.of(user));
 
@@ -116,6 +123,7 @@ public class UserServiceTest {
   }
 
   @Test
+  @DisplayName("Save throws BadRequestException when any field is blank or null")
   void save_ThrowBadRequestException_WhenAnyFieldIsBlankOrNull() {
     when(usersRepository.findBycpf(userPostRequestBody.getCpf())).thenReturn(Optional.empty());
     Assertions.assertAll(
@@ -146,6 +154,7 @@ public class UserServiceTest {
   }
 
   @Test
+  @DisplayName("Save throws BadRequestException when UserType different of Contador or Gerente")
   void save_ThrowBadRequestException_WhenUserTypeIsNotContadorOrGerente() {
     when(usersRepository.findBycpf(userPostRequestBody.getCpf())).thenReturn(Optional.empty());
     userPostRequestBody.setUserType("admin");
@@ -155,6 +164,7 @@ public class UserServiceTest {
   }
 
   @Test
+  @DisplayName("Save throws BadRequestException when CPF not have 11 digits")
   void save_TrowBadRequestException_WhenCpfNotHave11Digits() {
     userPostRequestBody.setCpf(123456L);
 
@@ -163,6 +173,7 @@ public class UserServiceTest {
   }
 
   @Test
+  @DisplayName("Delete deletes a USER when successful")
   void delete_DeletesUser_WhenSuccessful() {
     when(usersRepository.findById(user.getId())).thenReturn(Optional.of(user));
 
@@ -171,6 +182,7 @@ public class UserServiceTest {
   }
 
   @Test
+  @DisplayName("Delete throws BadRequestException when NO USER found")
   void delete_ThrowBadRequestException_WhenUserNotFound() {
     when(usersRepository.findById(user.getId())).thenReturn(Optional.empty());
 
@@ -179,6 +191,7 @@ public class UserServiceTest {
   }
 
   @Test
+  @DisplayName("Replace replaces a USER when successful")
   void replace_ReplaceUser_WhenSuccessful() {
     when(usersRepository.findById(userPutRequestBody.getId())).thenReturn(Optional.of(user));
 
@@ -187,6 +200,7 @@ public class UserServiceTest {
   }
 
   @Test
+  @DisplayName("Replace throws BadRequestException when NO USER found")
   void replace_ThrowBadRequestException_WhenUserNotFound() {
     when(usersRepository.findById(userPutRequestBody.getId())).thenReturn(Optional.empty());
 
@@ -196,6 +210,7 @@ public class UserServiceTest {
   }
 
   @Test
+  @DisplayName("Replace throws BadRequestException when CPF is already registered")
   void replace_ThrowBadRequestException_WhenNewCpfAlreadyRegistered() {
     Users user2 = new Users(
         UUID.randomUUID(),
@@ -214,6 +229,7 @@ public class UserServiceTest {
   }
 
   @Test
+  @DisplayName("Replace throws BadRequestException when any verification fails")
   void replace_ThrowBadRequestException_WhenAnyFieldIsBlankOrNull() {
     Assertions.assertAll(
         () -> {
@@ -243,6 +259,7 @@ public class UserServiceTest {
   }
 
   @Test
+  @DisplayName("Replace throws BadRequestException when user type is different of contador or gerente")
   void replace_ThrowBadRequestException_WhenUserTypeIsNotContadorOrGerente() {
     userPutRequestBody.setUserType("admin");
 

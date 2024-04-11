@@ -1,6 +1,7 @@
 package onboardingMarcos.tinelli.dto;
 
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -14,6 +15,7 @@ class SelicDtoTest {
   private SelicDTO selicDTO;
 
   @Test
+  @DisplayName("Test all getters and setters methods")
   void testGettersAndSetters() {
     Assertions.assertAll(
         () -> {
@@ -28,6 +30,7 @@ class SelicDtoTest {
   }
 
   @Test
+  @DisplayName("Test the constructor method")
   void testConstructor() {
     Assertions.assertDoesNotThrow(() -> new SelicDTO(
         "Selic",

@@ -15,6 +15,7 @@ import onboardingMarcos.tinelli.requests.TaxesPutRequestBody;
 import onboardingMarcos.tinelli.service.TaxesService;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -55,6 +56,7 @@ class TaxesServiceTest {
   }
 
   @Test
+  @DisplayName("List all returns a Taxes list when successful")
   void listAll_ReturnAllTaxes_WhenSuccessful() {
     when(taxesRepository.findAll()).thenReturn(List.of(tax));
     List<Taxes> taxes = taxesService.listAll();
@@ -62,6 +64,7 @@ class TaxesServiceTest {
   }
 
   @Test
+  @DisplayName("List all returns an EMPTY list when NO TAXES are found")
   void listAll_ReturnEmptyList_WhenTaxesNotFound() {
     when(taxesRepository.findAll()).thenReturn(Collections.emptyList());
     List<Taxes> taxes = taxesService.listAll();
@@ -71,6 +74,7 @@ class TaxesServiceTest {
   }
 
   @Test
+  @DisplayName("Find by id returns a Tax when successful")
   void findById_ReturnTaxes_WhenSuccessful() {
     when(taxesRepository.findById(tax.getId())).thenReturn(Optional.of(tax));
     Taxes taxes = taxesService.findByIdOrThrowBadRequestException(tax.getId());
@@ -79,6 +83,7 @@ class TaxesServiceTest {
   }
 
   @Test
+  @DisplayName("Find by id returns a BadRequestException when NO TAXES found")
   void findById_ThrowBadRequestException_WhenTaxesNotFound() {
     when(taxesRepository.findById(tax.getId())).thenReturn(Optional.empty());
     Assertions.assertThrows(BadRequestException.class,
@@ -86,6 +91,7 @@ class TaxesServiceTest {
   }
 
   @Test
+  @DisplayName("Save returns and save a Tax when successful")
   void save_ReturnTaxes_WhenSuccessful() {
     when(taxesRepository.save(any(Taxes.class))).thenReturn(tax);
     Taxes taxes = taxesService.save(taxesPostRequestBody);
@@ -95,6 +101,7 @@ class TaxesServiceTest {
   }
 
   @Test
+  @DisplayName("Save returns a BadRequestException when any field is blank or null")
   void save_ThrowBadRequestException_WhenAnyFieldIsBlankOrNull() {
     taxesPostRequestBody.setName("  ");
     taxesPostRequestBody.setAliquot(0.0D);
@@ -104,6 +111,7 @@ class TaxesServiceTest {
   }
 
   @Test
+  @DisplayName("Delete deletes Taxes when successful")
   void delete_DeletesTaxes_WhenSuccessful() {
     when(taxesRepository.findById(tax.getId())).thenReturn(Optional.of(tax));
     Assertions.assertDoesNotThrow(() -> taxesService.delete(tax.getId()));
@@ -111,6 +119,7 @@ class TaxesServiceTest {
   }
 
   @Test
+  @DisplayName("Delete throws BadRequestException when NO TAX found")
   void delete_ThrowBadExceptionError_WhenTaxesNotFound() {
     when(taxesRepository.findById(tax.getId())).thenReturn(Optional.empty());
     Assertions.assertThrows(BadRequestException.class, () -> taxesService.delete(tax.getId()));
@@ -118,6 +127,7 @@ class TaxesServiceTest {
   }
 
   @Test
+  @DisplayName("Replace replaces tax when successful")
   void replace_ReplaceTaxes_WhenSuccessful() {
     when(taxesRepository.findById(taxesPutRequestBody.getId())).thenReturn(Optional.of(tax));
     Assertions.assertDoesNotThrow(() -> taxesService.replace(taxesPutRequestBody));
@@ -125,6 +135,7 @@ class TaxesServiceTest {
   }
 
   @Test
+  @DisplayName("Replace throws BadRequestException when NO TAX found")
   void replace_ThrowBadExceptionError_WhenTaxesNotFound() {
     when(taxesRepository.findById(taxesPutRequestBody.getId())).thenReturn(Optional.empty());
     Assertions.assertThrows(BadRequestException.class,
@@ -133,6 +144,7 @@ class TaxesServiceTest {
   }
 
   @Test
+  @DisplayName("Replace throws BadRequestException when any field is blank or null")
   void replace_ThrowBadExceptionError_WhenAnyFieldIsBlankOrNull() {
     taxesPutRequestBody.setName("  ");
     taxesPutRequestBody.setAliquot(0.0D);
