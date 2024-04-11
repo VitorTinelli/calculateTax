@@ -1,6 +1,5 @@
 package onboardingMarcos.tinelli.requests;
 
-import java.util.Objects;
 import java.util.UUID;
 
 public class UserPutRequestBody {
@@ -62,25 +61,6 @@ public class UserPutRequestBody {
 
   public void setUserType(String userType) {
     this.userType = userType;
-  }
-
-  @Override
-  public boolean equals(Object o) {
-    if (this == o) {
-      return true;
-    }
-    if (o == null || getClass() != o.getClass()) {
-      return false;
-    }
-    UserPutRequestBody that = (UserPutRequestBody) o;
-    return Objects.equals(id, that.id) && Objects.equals(name, that.name)
-        && Objects.equals(cpf, that.cpf) && Objects.equals(password, that.password)
-        && Objects.equals(userType, that.userType);
-  }
-
-  @Override
-  public int hashCode() {
-    return Objects.hash(id, name, cpf, password, userType);
   }
 
 }

@@ -1,10 +1,10 @@
 package onboardingMarcos.tinelli.service;
 
 import java.text.DecimalFormat;
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.UUID;
-import lombok.extern.log4j.Log4j2;
 import onboardingMarcos.tinelli.controller.SelicController;
 import onboardingMarcos.tinelli.domain.Nfe;
 import onboardingMarcos.tinelli.domain.NfeTax;
@@ -15,15 +15,13 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 @Service
-@Log4j2
 public class NfeTaxService {
 
   private final NfeTaxRepository nfeTaxRepository;
   private final NfeService nfeService;
-
   private final TaxesService taxesService;
-
   private final SelicController selicController;
+  private final List<NfeTax> newNfeTaxList = new ArrayList<>();
 
   public NfeTaxService(NfeTaxRepository nfeTaxRepository, NfeService nfeService,
       TaxesService taxesService, SelicController selicController) {
@@ -33,40 +31,48 @@ public class NfeTaxService {
     this.selicController = selicController;
   }
 
-  public ResponseEntity<List<NfeTax>> postSeparatedByYearAndMonth() {
-    List<Nfe> nfeList = nfeService.listAll();
-    List<Taxes> taxesList = taxesService.listAll();
-    DecimalFormat formatter = new DecimalFormat("0.00");
-
-    if (!nfeList.isEmpty()) {
-      nfeList.sort(Comparator.comparing(Nfe::getDate));
-    } else {
-      throw new BadRequestException("No NFEs found");
-    }
-
-    for (Nfe nfe : nfeList) {
-      if (!nfeTaxRepository.findByNfe(nfe).isEmpty()) {
-        continue;
-      }
-
-      for (Taxes taxes : taxesList) {
-        Double difference =
-            nfe.getValue() * ((taxes.getAliquot() + selicController.getSelicPerMonth()) / 100);
-        Double taxedValue = nfe.getValue() + difference;
-
-        nfeTaxRepository.save(
-            new NfeTax(UUID.randomUUID(), nfe, taxes,
-                Double.parseDouble(formatter.format(taxedValue)),
-                Double.parseDouble(formatter.format(taxedValue - nfe.getValue())),
-                nfe.getDate().getMonth().toString(), nfe.getDate().getYear()));
-      }
-    }
+  public ResponseEntity<List<NfeTax>> listAll() {
     return ResponseEntity.ok(nfeTaxRepository.findAll());
   }
 
   public ResponseEntity<List<NfeTax>> getByNfeId(String uuid) {
     return ResponseEntity.ok(nfeTaxRepository.findByNfe(
         nfeService.findByIdOrThrowBadRequestException(UUID.fromString(uuid))));
+  }
+
+  public ResponseEntity<List<NfeTax>> postEveryNfeWithoutTax() {
+    try {
+      List<Nfe> nfeList = nfeService.listAll();
+      List<Taxes> taxesList = taxesService.listAll();
+      DecimalFormat formatter = new DecimalFormat("0.00");
+
+      if (!nfeList.isEmpty()) {
+        nfeList.sort(Comparator.comparing(Nfe::getDate));
+      } else {
+        throw new BadRequestException("No NFEs found");
+      }
+
+      for (Nfe nfe : nfeList) {
+        for (Taxes taxes : taxesList) {
+          if (nfeTaxRepository.findByNfeAndTaxes(nfe, taxes).isPresent()) {
+            continue;
+          }
+          Double difference =
+              nfe.getValue() * ((taxes.getAliquot() + selicController.getSelicPerMonth()) / 100);
+          Double taxedValue = nfe.getValue() + difference;
+
+          NfeTax savedNFE = nfeTaxRepository.save(
+              new NfeTax(UUID.randomUUID(), nfe, taxes,
+                  Double.parseDouble(formatter.format(taxedValue)),
+                  Double.parseDouble(formatter.format(taxedValue - nfe.getValue())),
+                  nfe.getDate().getMonth().toString(), nfe.getDate().getYear()));
+          newNfeTaxList.add(savedNFE);
+        }
+      }
+    } catch (Exception exception) {
+      throw new BadRequestException("Error while trying to post all NFEs without tax");
+    }
+    return ResponseEntity.ok(newNfeTaxList);
   }
 }
 

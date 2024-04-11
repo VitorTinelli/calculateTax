@@ -30,32 +30,44 @@ public class NfeService {
   }
 
   public Nfe save(NfePostRequestBody nfePostRequestBody) {
-    Verifications.verificationNFEPOST(nfePostRequestBody);
-    return nfeRepository.save(
-        new Nfe(
-            UUID.randomUUID(),
-            nfePostRequestBody.getNumber(),
-            nfePostRequestBody.getDate(),
-            nfePostRequestBody.getValue()
-        )
-    );
+    try {
+      Verifications.verificationNFEPOST(nfePostRequestBody);
+      return nfeRepository.save(
+          new Nfe(
+              UUID.randomUUID(),
+              nfePostRequestBody.getNumber(),
+              nfePostRequestBody.getDate(),
+              nfePostRequestBody.getValue()
+          )
+      );
+    } catch (Exception exception) {
+      throw new BadRequestException("Please verify the provided data");
+    }
   }
 
   public void delete(UUID uuid) {
     findByIdOrThrowBadRequestException(uuid);
-    nfeRepository.deleteById(uuid);
+    try {
+      nfeRepository.deleteById(uuid);
+    } catch (Exception e) {
+      throw new BadRequestException("NFe not found, please verify the provided ID");
+    }
   }
 
   public void replace(NfePutRequestBody nfePutRequestBody) {
-    Verifications.verificationNFEPUT(nfePutRequestBody);
-    Nfe savedNfe = findByIdOrThrowBadRequestException(nfePutRequestBody.getId());
-    nfeRepository.save(
-        new Nfe(
-            savedNfe.getId(),
-            nfePutRequestBody.getNumber(),
-            nfePutRequestBody.getDate(),
-            nfePutRequestBody.getValue()
-        )
-    );
+    try {
+      Verifications.verificationNFEPUT(nfePutRequestBody);
+      Nfe savedNfe = findByIdOrThrowBadRequestException(nfePutRequestBody.getId());
+      nfeRepository.save(
+          new Nfe(
+              savedNfe.getId(),
+              nfePutRequestBody.getNumber(),
+              nfePutRequestBody.getDate(),
+              nfePutRequestBody.getValue()
+          )
+      );
+    } catch (Exception exception) {
+      throw new BadRequestException("Please verify the provided data");
+    }
   }
 }

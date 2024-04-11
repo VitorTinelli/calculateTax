@@ -3,7 +3,6 @@ package onboardingMarcos.tinelli.domain;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import java.time.LocalDate;
-import java.util.Objects;
 import java.util.UUID;
 
 @Entity
@@ -57,32 +56,5 @@ public class Nfe {
     this.value = value;
   }
 
-  @Override
-  public boolean equals(Object o) {
-    if (this == o) {
-      return true;
-    }
-    if (o == null || getClass() != o.getClass()) {
-      return false;
-    }
-    Nfe nfe = (Nfe) o;
-    return Objects.equals(id, nfe.id) && Objects.equals(number, nfe.number)
-        && Objects.equals(date, nfe.date) && Objects.equals(value, nfe.value);
-  }
-
-  @Override
-  public int hashCode() {
-    return Objects.hash(id, number, date, value);
-  }
-
-  @Override
-  public String toString() {
-    return "Nfe{" +
-        "id=" + id +
-        ", number=" + number +
-        ", date=" + date +
-        ", value=" + value +
-        '}';
-  }
 }
 

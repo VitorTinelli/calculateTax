@@ -56,23 +56,23 @@ public class NfeTaxControllerTest {
   @Test
   @DisplayName("listAll returns list of nfeTax when successful")
   void listAll_ReturnListOfNfeTax_WhenSuccessful() {
-    when(nfeTaxService.postSeparatedByYearAndMonth()).thenReturn(
+    when(nfeTaxService.listAll()).thenReturn(
         ResponseEntity.ok(List.of(nfeTax)));
 
-    ResponseEntity<List<NfeTax>> nfeTaxList = nfeTaxController.getMonthlyNfeTax();
+    ResponseEntity<List<NfeTax>> nfeTaxList = nfeTaxController.listAll();
     Assertions.assertEquals(nfeTaxList.getBody(), List.of(nfeTax));
     Assertions.assertEquals(nfeTaxList.getStatusCodeValue(), 200);
-    verify(nfeTaxService).postSeparatedByYearAndMonth();
+    verify(nfeTaxService).listAll();
   }
 
   @Test
   @DisplayName("listAll returns BadRequestException when nfeTax list is empty")
   void listAll_ReturnBadRequestException_WhenNfeListIsEmpty() {
-    when(nfeTaxService.postSeparatedByYearAndMonth()).thenThrow(
+    when(nfeTaxService.listAll()).thenThrow(
         new BadRequestException("No NFEs found"));
 
-    Assertions.assertThrows(BadRequestException.class, () -> nfeTaxController.getMonthlyNfeTax());
-    verify(nfeTaxService).postSeparatedByYearAndMonth();
+    Assertions.assertThrows(BadRequestException.class, () -> nfeTaxController.listAll());
+    verify(nfeTaxService).listAll();
   }
 
   @Test

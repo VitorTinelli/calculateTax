@@ -39,6 +39,9 @@ public class Verifications {
   }
 
   public static void verificationTaxesPOST(TaxesPostRequestBody taxes) {
+    if (taxes.getAliquot() == 0.0D || taxes.getName() == null) {
+      throw new BadRequestException("You have to fill all fields");
+    }
     if (taxes.getName().isBlank()) {
       throw new BadRequestException("You have to fill all fields");
     }

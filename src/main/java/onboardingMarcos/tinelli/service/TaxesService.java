@@ -31,33 +31,42 @@ public class TaxesService {
   }
 
   public Taxes save(TaxesPostRequestBody taxesPostRequestBody) {
-    if ((taxesPostRequestBody.getAliquot() == 0.0D || taxesPostRequestBody.getName() == null)) {
-      throw new BadRequestException("You have to fill all fields");
+    try {
+      Verifications.verificationTaxesPOST(taxesPostRequestBody);
+      return taxesRepository.save(
+          new Taxes(
+              UUID.randomUUID(),
+              taxesPostRequestBody.getName(),
+              taxesPostRequestBody.getAliquot()
+          )
+      );
+    } catch (Exception exception) {
+      throw new BadRequestException("Please verify the provided data");
     }
-    Verifications.verificationTaxesPOST(taxesPostRequestBody);
-    return taxesRepository.save(
-        new Taxes(
-            UUID.randomUUID(),
-            taxesPostRequestBody.getName(),
-            taxesPostRequestBody.getAliquot()
-        )
-    );
   }
 
   public void delete(UUID id) {
     findByIdOrThrowBadRequestException(id);
-    taxesRepository.deleteById(id);
+    try {
+      taxesRepository.deleteById(id);
+    } catch (Exception exception) {
+      throw new BadRequestException("Taxes not found, please verify the provided ID");
+    }
   }
 
   public void replace(TaxesPutRequestBody taxesPutRequestBody) {
-    Taxes savedTaxes = findByIdOrThrowBadRequestException(taxesPutRequestBody.getId());
-    Verifications.verificationTaxesPUT(taxesPutRequestBody);
-    taxesRepository.save(
-        new Taxes(
-            savedTaxes.getId(),
-            taxesPutRequestBody.getName(),
-            taxesPutRequestBody.getAliquot()
-        )
-    );
+    try {
+      Taxes savedTaxes = findByIdOrThrowBadRequestException(taxesPutRequestBody.getId());
+      Verifications.verificationTaxesPUT(taxesPutRequestBody);
+      taxesRepository.save(
+          new Taxes(
+              savedTaxes.getId(),
+              taxesPutRequestBody.getName(),
+              taxesPutRequestBody.getAliquot()
+          )
+      );
+    } catch (Exception exception) {
+      throw new BadRequestException("Please verify the provided data");
+    }
   }
 }

@@ -42,11 +42,11 @@ public class UserService implements UserDetailsService {
   }
 
   public Users save(UserPostRequestBody user) {
-    if (findByCPForReturnNull(user.getCpf()) != null) {
-      throw new BadRequestException("CPF already registered");
-    }
-    Verifications.verificationUserPOST(user);
     try {
+      if (findByCPForReturnNull(user.getCpf()) != null) {
+        throw new BadRequestException("CPF already registered");
+      }
+      Verifications.verificationUserPOST(user);
       return usersRepository.save(
           new Users(
               UUID.randomUUID(),
@@ -65,17 +65,21 @@ public class UserService implements UserDetailsService {
 
   public void delete(UUID id) {
     findByIdOrThrowBadRequestException(id);
-    usersRepository.deleteById(id);
+    try {
+      usersRepository.deleteById(id);
+    } catch (Exception exception) {
+      throw new BadRequestException("User not found, please verify the provided ID");
+    }
   }
 
   public void replace(UserPutRequestBody userPutRequestBody) {
-    Verifications.verificationUserPUT(userPutRequestBody);
-    Users savedUser = findByIdOrThrowBadRequestException(userPutRequestBody.getId());
-    if (findByCPForReturnNull(userPutRequestBody.getCpf()) != null
-        && savedUser.getId() != findByCPForReturnNull(userPutRequestBody.getCpf()).getId()) {
-      throw new BadRequestException("CPF already registered");
-    }
     try {
+      Verifications.verificationUserPUT(userPutRequestBody);
+      Users savedUser = findByIdOrThrowBadRequestException(userPutRequestBody.getId());
+      if (findByCPForReturnNull(userPutRequestBody.getCpf()) != null
+          && savedUser.getId() != findByCPForReturnNull(userPutRequestBody.getCpf()).getId()) {
+        throw new BadRequestException("CPF already registered");
+      }
       usersRepository.save(
           new Users(
               savedUser.getId(),
@@ -86,7 +90,7 @@ public class UserService implements UserDetailsService {
               userPutRequestBody.getUserType().toLowerCase()
           )
       );
-    } catch (Exception e) {
+    } catch (Exception exception) {
       throw new BadRequestException(
           "Error updating user, please try again later or contact the administrator");
     }

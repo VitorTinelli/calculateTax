@@ -3,7 +3,6 @@ package onboardingMarcos.tinelli.domain;
 
 import javax.persistence.Entity;
 import javax.persistence.Id;
-import java.util.Objects;
 import java.util.UUID;
 
 @Entity
@@ -49,16 +48,4 @@ public class Taxes {
     this.aliquot = aliquot;
   }
 
-  @Override
-  public boolean equals(Object o) {
-    if (this == o) {
-      return true;
-    }
-    if (o == null || getClass() != o.getClass()) {
-      return false;
-    }
-    Taxes taxes = (Taxes) o;
-    return id == taxes.id && Double.compare(aliquot, taxes.aliquot) == 0
-        && Objects.equals(name, taxes.name);
-  }
 }

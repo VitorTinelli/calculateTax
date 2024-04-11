@@ -1,4 +1,4 @@
-package onboardingMarcos.tinelli.service;
+package onboardingMarcos.tinelli.services;
 
 
 import static org.mockito.ArgumentMatchers.any;
@@ -12,6 +12,7 @@ import onboardingMarcos.tinelli.exceptions.BadRequestException;
 import onboardingMarcos.tinelli.repository.TaxesRepository;
 import onboardingMarcos.tinelli.requests.TaxesPostRequestBody;
 import onboardingMarcos.tinelli.requests.TaxesPutRequestBody;
+import onboardingMarcos.tinelli.service.TaxesService;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

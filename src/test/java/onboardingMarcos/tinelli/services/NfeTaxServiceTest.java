@@ -1,4 +1,4 @@
-package onboardingMarcos.tinelli.service;
+package onboardingMarcos.tinelli.services;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
@@ -7,11 +7,15 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
+import onboardingMarcos.tinelli.controller.SelicController;
 import onboardingMarcos.tinelli.domain.Nfe;
 import onboardingMarcos.tinelli.domain.NfeTax;
 import onboardingMarcos.tinelli.domain.Taxes;
 import onboardingMarcos.tinelli.exceptions.BadRequestException;
 import onboardingMarcos.tinelli.repository.NfeTaxRepository;
+import onboardingMarcos.tinelli.service.NfeService;
+import onboardingMarcos.tinelli.service.NfeTaxService;
+import onboardingMarcos.tinelli.service.TaxesService;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -19,15 +23,11 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
 
 
 @ExtendWith(MockitoExtension.class)
 class NfeTaxServiceTest {
-
-  private static final Logger log = LoggerFactory.getLogger(NfeTaxServiceTest.class);
   Nfe nfe;
   Taxes tax;
   NfeTax nfeTax;
@@ -44,6 +44,9 @@ class NfeTaxServiceTest {
   @Mock
   private TaxesService taxesService;
 
+  @Mock
+  private SelicController SelicController;
+
   @BeforeEach
   void setUp() {
     UUID id = UUID.randomUUID();
@@ -54,22 +57,15 @@ class NfeTaxServiceTest {
 
   @Test
   void listAll_ReturnAllNfeTax_WhenSuccessful() {
-    when(nfeService.listAll()).thenReturn(new ArrayList<>(List.of(nfe)));
-    when(taxesService.listAll()).thenReturn(List.of(tax));
-    when(nfeTaxRepository.findByNfe(nfe)).thenReturn(List.of(nfeTax));
     when(nfeTaxRepository.findAll()).thenReturn(List.of(nfeTax));
-
-    ResponseEntity<List<NfeTax>> savedNfeTax = nfeTaxService.postSeparatedByYearAndMonth();
+    ResponseEntity<List<NfeTax>> savedNfeTax = nfeTaxService.listAll();
     Assertions.assertEquals(List.of(nfeTax), savedNfeTax.getBody());
   }
 
   @Test
-  void listAll_ThrowBadRequestException_WhenNfeNotFound() {
-    when(nfeService.listAll()).thenReturn(Collections.emptyList());
-    when(taxesService.listAll()).thenReturn(List.of(tax));
-
-    Assertions.assertThrows(BadRequestException.class,
-        () -> nfeTaxService.postSeparatedByYearAndMonth());
+  void listAll_ReturnEmptyList_WhenNfeNotFound() {
+    when(nfeTaxRepository.findAll()).thenReturn(Collections.emptyList());
+    Assertions.assertTrue(nfeTaxService.listAll().getBody().isEmpty());
   }
 
   @Test
@@ -90,4 +86,23 @@ class NfeTaxServiceTest {
         () -> nfeTaxService.getByNfeId(nfe.getId().toString()));
   }
 
+  @Test
+  void post_ReturnNfeTax_WhenSuccessful() {
+    when(nfeService.listAll()).thenReturn(new ArrayList<>(List.of(nfe)));
+    when(taxesService.listAll()).thenReturn(List.of(tax));
+    when(SelicController.getSelicPerMonth()).thenReturn(0.0D);
+    when(nfeTaxRepository.findByNfeAndTaxes(nfe, tax)).thenReturn(java.util.Optional.empty());
+
+    when(nfeTaxRepository.save(any(NfeTax.class))).thenReturn(nfeTax);
+
+    ResponseEntity<List<NfeTax>> savedNfeTax = nfeTaxService.postEveryNfeWithoutTax();
+    Assertions.assertEquals(List.of(nfeTax), savedNfeTax.getBody());
+  }
+
+  @Test
+  void post_ThrowBadRequestException_WhenNfeNotFound() {
+    when(nfeService.listAll()).thenReturn(Collections.emptyList());
+    Assertions.assertThrows(BadRequestException.class,
+        () -> nfeTaxService.postEveryNfeWithoutTax());
+  }
 }

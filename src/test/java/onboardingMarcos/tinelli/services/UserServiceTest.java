@@ -1,4 +1,4 @@
-package onboardingMarcos.tinelli.service;
+package onboardingMarcos.tinelli.services;
 
 
 import static org.mockito.ArgumentMatchers.any;
@@ -11,6 +11,7 @@ import onboardingMarcos.tinelli.exceptions.BadRequestException;
 import onboardingMarcos.tinelli.repository.UsersRepository;
 import onboardingMarcos.tinelli.requests.UserPostRequestBody;
 import onboardingMarcos.tinelli.requests.UserPutRequestBody;
+import onboardingMarcos.tinelli.service.UserService;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

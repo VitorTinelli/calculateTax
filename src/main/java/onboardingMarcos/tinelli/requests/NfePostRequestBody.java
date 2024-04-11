@@ -1,7 +1,6 @@
 package onboardingMarcos.tinelli.requests;
 
 import java.time.LocalDate;
-import java.util.Objects;
 
 public class NfePostRequestBody {
 
@@ -39,30 +38,4 @@ public class NfePostRequestBody {
     this.value = value;
   }
 
-  @Override
-  public boolean equals(Object o) {
-    if (this == o) {
-      return true;
-    }
-    if (o == null || getClass() != o.getClass()) {
-      return false;
-    }
-    NfePostRequestBody that = (NfePostRequestBody) o;
-    return Objects.equals(number, that.number) && Objects.equals(date, that.date)
-        && Objects.equals(value, that.value);
-  }
-
-  @Override
-  public int hashCode() {
-    return Objects.hash(number, date, value);
-  }
-
-  @Override
-  public String toString() {
-    return "NfePostRequestBody{" +
-        "number=" + number +
-        ", date=" + date +
-        ", value=" + value +
-        '}';
-  }
 }

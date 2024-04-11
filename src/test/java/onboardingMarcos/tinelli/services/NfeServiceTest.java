@@ -1,4 +1,4 @@
-package onboardingMarcos.tinelli.service;
+package onboardingMarcos.tinelli.services;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
@@ -13,6 +13,7 @@ import onboardingMarcos.tinelli.exceptions.BadRequestException;
 import onboardingMarcos.tinelli.repository.NfeRepository;
 import onboardingMarcos.tinelli.requests.NfePostRequestBody;
 import onboardingMarcos.tinelli.requests.NfePutRequestBody;
+import onboardingMarcos.tinelli.service.NfeService;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -37,7 +38,6 @@ class NfeServiceTest {
   @BeforeEach
   void setUp() {
     UUID id = UUID.randomUUID();
-
     nfe = new Nfe(id, 12345678910L, LocalDate.now(), 198.00D);
     nfePostRequestBody = new NfePostRequestBody(
         12345678910L,

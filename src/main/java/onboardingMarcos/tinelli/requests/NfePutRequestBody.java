@@ -1,7 +1,6 @@
 package onboardingMarcos.tinelli.requests;
 
 import java.time.LocalDate;
-import java.util.Objects;
 import java.util.UUID;
 
 public class NfePutRequestBody {
@@ -50,16 +49,4 @@ public class NfePutRequestBody {
     this.value = value;
   }
 
-  @Override
-  public boolean equals(Object o) {
-    if (this == o) {
-      return true;
-    }
-    if (o == null || getClass() != o.getClass()) {
-      return false;
-    }
-    NfePutRequestBody that = (NfePutRequestBody) o;
-    return Objects.equals(id, that.id) && Objects.equals(number, that.number)
-        && Objects.equals(date, that.date) && Objects.equals(value, that.value);
-  }
 }
