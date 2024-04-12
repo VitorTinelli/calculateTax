@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.UUID;
+import lombok.extern.slf4j.Slf4j;
 import onboardingMarcos.tinelli.controller.SelicController;
 import onboardingMarcos.tinelli.domain.Nfe;
 import onboardingMarcos.tinelli.domain.NfeTax;
@@ -14,6 +15,7 @@ import onboardingMarcos.tinelli.repository.NfeTaxRepository;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+@Slf4j
 @Service
 public class NfeTaxService {
 
@@ -70,7 +72,7 @@ public class NfeTaxService {
         }
       }
     } catch (Exception exception) {
-      throw new BadRequestException("Error while trying to post all NFEs without tax");
+      throw new BadRequestException(exception.getMessage());
     }
     return ResponseEntity.ok(newNfeTaxList);
   }

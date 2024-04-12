@@ -83,7 +83,7 @@ public class NfeTaxControllerTest {
 
     ResponseEntity<List<NfeTax>> nfeTaxList = nfeTaxController.getByNfeId(nfe.getId().toString());
     Assertions.assertEquals(nfeTaxList.getBody(), List.of(nfeTax));
-    Assertions.assertEquals(nfeTaxList.getStatusCodeValue(), 200);
+    Assertions.assertEquals(200, nfeTaxList.getStatusCodeValue());
     verify(nfeTaxService).getByNfeId(nfe.getId().toString());
   }
 
@@ -97,5 +97,4 @@ public class NfeTaxControllerTest {
         () -> nfeTaxController.getByNfeId(nfe.getId().toString()));
     verify(nfeTaxService).getByNfeId(nfe.getId().toString());
   }
-
 }

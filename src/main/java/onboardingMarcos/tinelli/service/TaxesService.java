@@ -41,7 +41,7 @@ public class TaxesService {
           )
       );
     } catch (Exception exception) {
-      throw new BadRequestException("Please verify the provided data");
+      throw new BadRequestException(exception.getMessage());
     }
   }
 
@@ -66,7 +66,7 @@ public class TaxesService {
           )
       );
     } catch (Exception exception) {
-      throw new BadRequestException("Please verify the provided data");
+      throw new BadRequestException(exception.getMessage());
     }
   }
 }

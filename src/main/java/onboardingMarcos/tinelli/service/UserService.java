@@ -57,9 +57,9 @@ public class UserService implements UserDetailsService {
               user.getUserType().toLowerCase()
           )
       );
-    } catch (Exception e) {
+    } catch (Exception exception) {
       throw new BadRequestException(
-          "Error saving user, please try again later or contact the administrator");
+          exception.getMessage());
     }
   }
 
@@ -92,7 +92,7 @@ public class UserService implements UserDetailsService {
       );
     } catch (Exception exception) {
       throw new BadRequestException(
-          "Error updating user, please try again later or contact the administrator");
+          exception.getMessage());
     }
   }
 
