@@ -10,6 +10,7 @@ import onboardingMarcos.tinelli.domain.NfeTax;
 import onboardingMarcos.tinelli.domain.Taxes;
 import onboardingMarcos.tinelli.exceptions.BadRequestException;
 import onboardingMarcos.tinelli.repository.NfeTaxRepository;
+import onboardingMarcos.tinelli.requests.NfeTaxYearMonthRequestBody;
 import onboardingMarcos.tinelli.service.NfeService;
 import onboardingMarcos.tinelli.service.NfeTaxService;
 import onboardingMarcos.tinelli.service.TaxesService;
@@ -86,6 +87,42 @@ class NfeTaxServiceTest {
 
     Assertions.assertThrows(BadRequestException.class,
         () -> nfeTaxService.getByNfeId(nfe.getId().toString()));
+  }
+
+  @Test
+  @DisplayName("List by Nfe Year return a list of NfeTax when successful")
+  void listByNfeYear_ReturnListOfNfeTax_WhenSuccessful() {
+    when(nfeTaxRepository.findByYear(any(Long.class))).thenReturn(List.of(nfeTax));
+    ResponseEntity<List<NfeTax>> savedNfeTax = nfeTaxService.getByNfeYear(2001L);
+    Assertions.assertEquals(List.of(nfeTax), savedNfeTax.getBody());
+  }
+
+  @Test
+  @DisplayName("List by Nfe Year return a empty list of NfeTax when no NfeTax is found")
+  void listByNfeYear_ReturnEmptyList_WhenNfeTaxNotFound() {
+    when(nfeTaxRepository.findByYear(any(Long.class))).thenReturn(Collections.emptyList());
+    Assertions.assertTrue(
+        Objects.requireNonNull(nfeTaxService.getByNfeYear(2001L).getBody()).isEmpty());
+  }
+
+  @Test
+  @DisplayName("List by Nfe Month and Year return a list of NfeTax when successful")
+  void listByNfeMonthAndYear_ReturnListOfNfeTax_WhenSuccessful() {
+    when(nfeTaxRepository.findByMonthAndYear(any(String.class), any(Long.class)))
+        .thenReturn(List.of(nfeTax));
+    ResponseEntity<List<NfeTax>> savedNfeTax = nfeTaxService.getByNfeMonthAndYear(
+        new NfeTaxYearMonthRequestBody("January", 2022L));
+    Assertions.assertEquals(List.of(nfeTax), savedNfeTax.getBody());
+  }
+
+  @Test
+  @DisplayName("List by Nfe Month and Year return a empty list of NfeTax when no NfeTax is found")
+  void listByNfeMonthAndYear_ReturnEmptyList_WhenNfeTaxNotFound() {
+    when(nfeTaxRepository.findByMonthAndYear(any(String.class), any(Long.class)))
+        .thenReturn(Collections.emptyList());
+    Assertions.assertTrue(
+        Objects.requireNonNull(nfeTaxService.getByNfeMonthAndYear(
+            new NfeTaxYearMonthRequestBody("January", 2022L)).getBody()).isEmpty());
   }
 
   @Test
