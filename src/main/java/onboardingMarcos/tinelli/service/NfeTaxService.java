@@ -12,6 +12,7 @@ import onboardingMarcos.tinelli.domain.NfeTax;
 import onboardingMarcos.tinelli.domain.Taxes;
 import onboardingMarcos.tinelli.exceptions.BadRequestException;
 import onboardingMarcos.tinelli.repository.NfeTaxRepository;
+import onboardingMarcos.tinelli.requests.NfeTaxYearMonthRequestBody;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
@@ -40,6 +41,10 @@ public class NfeTaxService {
   public ResponseEntity<List<NfeTax>> getByNfeId(String uuid) {
     return ResponseEntity.ok(nfeTaxRepository.findByNfe(
         nfeService.findByIdOrThrowBadRequestException(UUID.fromString(uuid))));
+  }
+
+  public ResponseEntity<List<NfeTax>> getByNfeYear(Long year) {
+    return ResponseEntity.ok(nfeTaxRepository.findByYear(year));
   }
 
   public ResponseEntity<List<NfeTax>> postEveryNfeWithoutTax() {
@@ -75,6 +80,13 @@ public class NfeTaxService {
       throw new BadRequestException(exception.getMessage());
     }
     return ResponseEntity.ok(newNfeTaxList);
+  }
+
+  public ResponseEntity<List<NfeTax>> getByNfeMonthAndYear(
+      NfeTaxYearMonthRequestBody nfeTaxYearMonthRequestBody) {
+    return ResponseEntity.ok(
+        nfeTaxRepository.findByMonthAndYear(nfeTaxYearMonthRequestBody.getMonth(),
+            nfeTaxYearMonthRequestBody.getYear()));
   }
 }
 

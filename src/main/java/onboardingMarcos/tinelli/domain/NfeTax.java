@@ -23,10 +23,10 @@ public class NfeTax {
 
   private String month;
 
-  private Double year;
+  private Long year;
 
   public NfeTax(UUID id, Nfe nfe, Taxes taxes, double valueWithTax, double difference, String month,
-      double year) {
+      long year) {
     this.id = id;
     this.nfe = nfe;
     this.taxes = taxes;
@@ -83,7 +83,7 @@ public class NfeTax {
     return year;
   }
 
-  public void setYear(double year) {
+  public void setYear(long year) {
     this.year = year;
   }
 

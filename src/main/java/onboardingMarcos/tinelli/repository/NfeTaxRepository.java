@@ -13,4 +13,8 @@ public interface NfeTaxRepository extends JpaRepository<NfeTax, UUID> {
   List<NfeTax> findByNfe(Nfe nfe);
 
   Optional<NfeTax> findByNfeAndTaxes(Nfe nfe, Taxes taxes);
+
+  List<NfeTax> findByYear(Long year);
+
+  List<NfeTax> findByMonthAndYear(String month, Long year);
 }
