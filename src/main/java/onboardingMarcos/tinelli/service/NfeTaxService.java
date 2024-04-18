@@ -53,30 +53,15 @@ public class NfeTaxService {
 
   public ResponseEntity<List<NfeTax>> postEveryNfeWithoutTax() {
     try {
-      List<Nfe> nfeList = nfeService.listAll();
+      List<Nfe> sortedNfeList = getNfeListOrThrowBadRequestException();
       List<Taxes> taxesList = taxesService.listAll();
-      DecimalFormat formatter = new DecimalFormat("0.00");
 
-      if (!nfeList.isEmpty()) {
-        nfeList.sort(Comparator.comparing(Nfe::getDate));
-      } else {
-        throw new BadRequestException("No NFEs found");
-      }
-
-      for (Nfe nfe : nfeList) {
+      for (Nfe nfe : sortedNfeList) {
         for (Taxes taxes : taxesList) {
           if (nfeTaxRepository.findByNfeAndTaxes(nfe, taxes).isPresent()) {
             continue;
           }
-          Double difference =
-              nfe.getValue() * ((taxes.getAliquot() + selicController.getSelicPerMonth()) / 100);
-          Double taxedValue = nfe.getValue() + difference;
-
-          NfeTax savedNFE = nfeTaxRepository.save(
-              new NfeTax(UUID.randomUUID(), nfe, taxes,
-                  Double.parseDouble(formatter.format(taxedValue)),
-                  Double.parseDouble(formatter.format(taxedValue - nfe.getValue())),
-                  nfe.getDate().getMonth().toString(), nfe.getDate().getYear()));
+          NfeTax savedNFE = nfeTaxRepository.save(calculateTaxAndCreateConstructor(nfe, taxes));
           newNfeTaxList.add(savedNFE);
         }
       }
@@ -84,6 +69,28 @@ public class NfeTaxService {
       throw new BadRequestException(exception.getMessage());
     }
     return ResponseEntity.ok(newNfeTaxList);
+  }
+
+  public List<Nfe> getNfeListOrThrowBadRequestException() {
+    List<Nfe> nfeList = nfeService.listAll();
+    if (!nfeList.isEmpty()) {
+      nfeList.sort(Comparator.comparing(Nfe::getDate));
+    } else {
+      throw new BadRequestException("No NFEs found");
+    }
+    return nfeList;
+  }
+
+  public NfeTax calculateTaxAndCreateConstructor(Nfe nfe, Taxes taxes) {
+    Double difference =
+        nfe.getValue() * ((taxes.getAliquot() + selicController.getSelicPerMonth()) / 100);
+    Double taxedValue = nfe.getValue() + difference;
+    DecimalFormat formatter = new DecimalFormat("0.00");
+
+    return new NfeTax(UUID.randomUUID(), nfe, taxes,
+        Double.parseDouble(formatter.format(taxedValue)),
+        Double.parseDouble(formatter.format(taxedValue - nfe.getValue())),
+        nfe.getDate().getMonth().toString(), nfe.getDate().getYear());
   }
 
   public ResponseEntity<List<NfeTax>> getByNfeMonthAndYear(
