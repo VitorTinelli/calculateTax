@@ -4,6 +4,7 @@ import javax.validation.Valid;
 import java.util.List;
 import java.util.UUID;
 import onboardingMarcos.tinelli.domain.NfeTax;
+import onboardingMarcos.tinelli.requests.DateGapRequestBody;
 import onboardingMarcos.tinelli.requests.NfeTaxYearMonthRequestBody;
 import onboardingMarcos.tinelli.service.NfeTaxService;
 import org.springframework.http.ResponseEntity;
@@ -44,6 +45,13 @@ public class NfeTaxController {
   @PostMapping("/post-all")
   public ResponseEntity<List<NfeTax>> postAllNfeTax() {
     return nfeTaxService.postEveryNfeWithoutTax();
+  }
+
+  @PostMapping("/post-all/date")
+  public ResponseEntity<List<NfeTax>> postAllNfeTaxByDateGap(
+      @RequestBody DateGapRequestBody dateGapRequestBody) {
+    return nfeTaxService.postEveryNfeWithoutTaxByDateGap(dateGapRequestBody.getStartDate(),
+        dateGapRequestBody.getEndDate());
   }
 
   @DeleteMapping("/list-all/{id}")

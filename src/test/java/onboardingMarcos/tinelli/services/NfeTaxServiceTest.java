@@ -177,6 +177,45 @@ class NfeTaxServiceTest {
   }
 
   @Test
+  @DisplayName("Post returns a NfeTax when successful by date gap")
+  void post_ReturnNfeTax_WhenSuccessfulByDateGap() {
+    when(nfeService.findByTimeGap(any(LocalDate.class), any(LocalDate.class)))
+        .thenReturn(new ArrayList<>(List.of(nfe)));
+    when(taxesService.listAll()).thenReturn(List.of(tax));
+    when(SelicController.getSelicPerMonth()).thenReturn(9.0D);
+    when(nfeTaxRepository.findByNfeAndTaxes(nfe, tax)).thenReturn(Optional.empty());
+    when(nfeTaxRepository.save(any(NfeTax.class))).thenReturn(nfeTax);
+
+    ResponseEntity<List<NfeTax>> savedNfeTax = nfeTaxService.postEveryNfeWithoutTaxByDateGap(
+        LocalDate.now(), LocalDate.now());
+    Assertions.assertEquals(List.of(nfeTax), savedNfeTax.getBody());
+  }
+
+  @Test
+  @DisplayName("Post returns an empty list when every NFE has every TAX by date gap")
+  void post_ReturnEmptyList_WhenEveryNfeHasTaxByDateGap() {
+    when(nfeService.findByTimeGap(any(LocalDate.class), any(LocalDate.class)))
+        .thenReturn(new ArrayList<>(List.of(nfe)));
+    when(taxesService.listAll()).thenReturn(List.of(tax));
+    when(nfeTaxRepository.findByNfeAndTaxes(nfe, tax)).thenReturn(Optional.of(nfeTax));
+
+    Assertions.assertTrue(
+        nfeTaxService.postEveryNfeWithoutTaxByDateGap(LocalDate.now(), LocalDate.now())
+            .getBody().isEmpty());
+    verify(nfeTaxRepository).findByNfeAndTaxes(nfe, tax);
+    verify(nfeTaxRepository, never()).save(any(NfeTax.class));
+  }
+
+  @Test
+  @DisplayName("Post throws BadRequestException when no NFE found by date gap")
+  void post_ThrowBadRequestException_WhenNfeNotFoundByDateGap() {
+    when(nfeService.findByTimeGap(any(LocalDate.class), any(LocalDate.class)))
+        .thenReturn(Collections.emptyList());
+    Assertions.assertThrows(BadRequestException.class,
+        () -> nfeTaxService.postEveryNfeWithoutTaxByDateGap(LocalDate.now(), LocalDate.now()));
+  }
+
+  @Test
   @DisplayName("Delete all by Nfe ID returns no content when successful")
   void deleteAllByNfeID_ReturnNoContent_WhenSuccessful() {
     when(nfeService.findByIdOrThrowBadRequestException(nfe.getId())).thenReturn(nfe);

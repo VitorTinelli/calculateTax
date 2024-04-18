@@ -8,7 +8,7 @@ import org.mockito.InjectMocks;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 @ExtendWith(MockitoExtension.class)
-class SelicDtoTest {
+class SelicDTOTest {
 
 
   @InjectMocks
@@ -37,5 +37,5 @@ class SelicDtoTest {
         "20.0D"
     ));
   }
-  
+
 }

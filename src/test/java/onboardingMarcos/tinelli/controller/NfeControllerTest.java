@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.UUID;
 import onboardingMarcos.tinelli.domain.Nfe;
 import onboardingMarcos.tinelli.exceptions.BadRequestException;
+import onboardingMarcos.tinelli.requests.DateGapRequestBody;
 import onboardingMarcos.tinelli.requests.NfePostRequestBody;
 import onboardingMarcos.tinelli.requests.NfePutRequestBody;
 import onboardingMarcos.tinelli.service.NfeService;
@@ -26,6 +27,7 @@ public class NfeControllerTest {
   Nfe nfe;
   NfePostRequestBody nfePostRequestBody;
   NfePutRequestBody nfePutRequestBody;
+  DateGapRequestBody dateGapRequestBody;
 
   @InjectMocks
   private NfeController nfeController;
@@ -47,6 +49,10 @@ public class NfeControllerTest {
         12345678911L,
         LocalDate.now(),
         198.00D
+    );
+    dateGapRequestBody = new DateGapRequestBody(
+        LocalDate.now(),
+        LocalDate.now()
     );
 
   }
@@ -111,6 +117,30 @@ public class NfeControllerTest {
 
     Assertions.assertThrows(BadRequestException.class, () -> nfeController.findById(null));
     verify(nfeService).findByIdOrThrowBadRequestException(null);
+    verifyNoMoreInteractions(nfeService);
+  }
+
+  @Test
+  @DisplayName("listAllByTimeGap returns list of nfe when successful")
+  void listAllByTimeGap_ReturnListOfNfe_WhenSuccessful() {
+    when(nfeService.findByTimeGap(any(LocalDate.class), any(LocalDate.class))).thenReturn(
+        List.of(nfe));
+
+    Assertions.assertTrue(
+        nfeController.listAllByTimeGap(dateGapRequestBody).getBody().contains(nfe));
+    verify(nfeService).findByTimeGap(any(LocalDate.class), any(LocalDate.class));
+    verifyNoMoreInteractions(nfeService);
+  }
+
+  @Test
+  @DisplayName("listAllByTimeGap returns list of nfe when successful")
+  void listAllByTimeGap_ReturnEmptyList_WhenNoNfeFound() {
+    when(nfeService.findByTimeGap(any(LocalDate.class), any(LocalDate.class))).thenReturn(
+        Collections.emptyList());
+
+    Assertions.assertTrue(
+        nfeController.listAllByTimeGap(dateGapRequestBody).getBody().isEmpty());
+    verify(nfeService).findByTimeGap(any(LocalDate.class), any(LocalDate.class));
     verifyNoMoreInteractions(nfeService);
   }
 

@@ -1,6 +1,7 @@
 package onboardingMarcos.tinelli.service;
 
 import java.text.DecimalFormat;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
@@ -71,6 +72,32 @@ public class NfeTaxService {
     return ResponseEntity.ok(newNfeTaxList);
   }
 
+  public ResponseEntity<List<NfeTax>> postEveryNfeWithoutTaxByDateGap(LocalDate start,
+      LocalDate end) {
+    try {
+      List<Nfe> nfeList = nfeService.findByTimeGap(start, end);
+      if (!nfeList.isEmpty()) {
+        nfeList.sort(Comparator.comparing(Nfe::getDate));
+      } else {
+        throw new BadRequestException("No NFEs found");
+      }
+      List<Taxes> taxesList = taxesService.listAll();
+      for (Nfe nfe : nfeList) {
+        for (Taxes taxes : taxesList) {
+          if (nfeTaxRepository.findByNfeAndTaxes(nfe, taxes).isPresent()) {
+
+            continue;
+          }
+          NfeTax savedNFE = nfeTaxRepository.save(calculateTaxAndCreateConstructor(nfe, taxes));
+          newNfeTaxList.add(savedNFE);
+        }
+      }
+    } catch (Exception exception) {
+      throw new BadRequestException(exception.getMessage());
+    }
+    return ResponseEntity.ok(newNfeTaxList);
+  }
+
   public List<Nfe> getNfeListOrThrowBadRequestException() {
     List<Nfe> nfeList = nfeService.listAll();
     if (!nfeList.isEmpty()) {
@@ -114,4 +141,6 @@ public class NfeTaxService {
     nfeTaxRepository.deleteById(id);
   }
 }
+
+
 

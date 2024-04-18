@@ -1,5 +1,6 @@
 package onboardingMarcos.tinelli.service;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.UUID;
 import onboardingMarcos.tinelli.domain.Nfe;
@@ -69,5 +70,9 @@ public class NfeService {
     } catch (Exception exception) {
       throw new BadRequestException(exception.getMessage());
     }
+  }
+
+  public List<Nfe> findByTimeGap(LocalDate start, LocalDate end) {
+    return nfeRepository.findByDateBetween(start, end);
   }
 }

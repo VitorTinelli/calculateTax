@@ -12,6 +12,7 @@ import onboardingMarcos.tinelli.domain.NfeTax;
 import onboardingMarcos.tinelli.domain.Taxes;
 import onboardingMarcos.tinelli.dto.SelicDTO;
 import onboardingMarcos.tinelli.exceptions.BadRequestException;
+import onboardingMarcos.tinelli.requests.DateGapRequestBody;
 import onboardingMarcos.tinelli.requests.NfeTaxYearMonthRequestBody;
 import onboardingMarcos.tinelli.service.NfeService;
 import onboardingMarcos.tinelli.service.NfeTaxService;
@@ -34,6 +35,8 @@ class NfeTaxControllerTest {
   SelicDTO selicDTO;
   NfeTaxYearMonthRequestBody nfeTaxYearMonthRequestBody;
   UUID id;
+  DateGapRequestBody dateGapRequestBody;
+
   @Mock
   NfeService nfeService;
   @InjectMocks
@@ -57,6 +60,7 @@ class NfeTaxControllerTest {
         2022L
     );
     nfeTaxYearMonthRequestBody = new NfeTaxYearMonthRequestBody("janeiro", 2022L);
+    dateGapRequestBody = new DateGapRequestBody(LocalDate.now(), LocalDate.now());
   }
 
   @Test
@@ -176,6 +180,34 @@ class NfeTaxControllerTest {
     Assertions.assertEquals(nfeTaxList.getBody(), List.of());
     Assertions.assertEquals(200, nfeTaxList.getStatusCodeValue());
     verify(nfeTaxService).postEveryNfeWithoutTax();
+  }
+
+  @Test
+  @DisplayName("postAllNfeTaxByDateGap returns list of new NfeTax when successful")
+  void postAllNfeTaxByDateGap_ReturnListOfNewNfeTax_WhenSuccessful() {
+    when(nfeTaxService.postEveryNfeWithoutTaxByDateGap(any(LocalDate.class), any(LocalDate.class)))
+        .thenReturn(ResponseEntity.ok(List.of(nfeTax)));
+
+    ResponseEntity<List<NfeTax>> nfeTaxList = nfeTaxController.postAllNfeTaxByDateGap(
+        dateGapRequestBody);
+    Assertions.assertEquals(nfeTaxList.getBody(), List.of(nfeTax));
+    Assertions.assertEquals(200, nfeTaxList.getStatusCodeValue());
+    verify(nfeTaxService).postEveryNfeWithoutTaxByDateGap(any(LocalDate.class),
+        any(LocalDate.class));
+  }
+
+  @Test
+  @DisplayName("postAllNfeTaxByDateGap returns an empty list when all nfe has already been taxed")
+  void postAllNfeTaxByDateGap_ReturnEmptyList_WhenAllNfeAlreadyTaxed() {
+    when(nfeTaxService.postEveryNfeWithoutTaxByDateGap(any(LocalDate.class), any(LocalDate.class)))
+        .thenReturn(ResponseEntity.ok(List.of()));
+
+    ResponseEntity<List<NfeTax>> nfeTaxList = nfeTaxController.postAllNfeTaxByDateGap(
+        dateGapRequestBody);
+    Assertions.assertEquals(nfeTaxList.getBody(), List.of());
+    Assertions.assertEquals(200, nfeTaxList.getStatusCodeValue());
+    verify(nfeTaxService).postEveryNfeWithoutTaxByDateGap(any(LocalDate.class),
+        any(LocalDate.class));
   }
 
   @Test
