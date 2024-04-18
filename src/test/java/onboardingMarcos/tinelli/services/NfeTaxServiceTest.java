@@ -126,6 +126,23 @@ class NfeTaxServiceTest {
   }
 
   @Test
+  @DisplayName("Find by ID returns a NfeTax when successful")
+  void findById_ReturnNfeTax_WhenSuccessful() {
+    when(nfeTaxRepository.findById(nfeTax.getId())).thenReturn(Optional.of(nfeTax));
+    ResponseEntity<NfeTax> savedNfeTax = nfeTaxService.findByIdOrThrowBadRequestException(
+        nfeTax.getId());
+    Assertions.assertEquals(nfeTax, savedNfeTax.getBody());
+  }
+
+  @Test
+  @DisplayName("Find by ID throws BadRequestException when no NfeTax is found")
+  void findById_ThrowBadRequestException_WhenNfeTaxNotFound() {
+    when(nfeTaxRepository.findById(nfeTax.getId())).thenReturn(Optional.empty());
+    Assertions.assertThrows(BadRequestException.class,
+        () -> nfeTaxService.findByIdOrThrowBadRequestException(nfeTax.getId()));
+  }
+
+  @Test
   @DisplayName("Post returns a NfeTax when successful")
   void post_ReturnNfeTax_WhenSuccessful() {
     when(nfeService.listAll()).thenReturn(new ArrayList<>(List.of(nfe)));
@@ -157,5 +174,48 @@ class NfeTaxServiceTest {
     Assertions.assertTrue(nfeTaxService.postEveryNfeWithoutTax().getBody().isEmpty());
     verify(nfeTaxRepository).findByNfeAndTaxes(nfe, tax);
     verify(nfeTaxRepository, never()).save(any(NfeTax.class));
+  }
+
+  @Test
+  @DisplayName("Delete all by Nfe ID returns no content when successful")
+  void deleteAllByNfeID_ReturnNoContent_WhenSuccessful() {
+    when(nfeService.findByIdOrThrowBadRequestException(nfe.getId())).thenReturn(nfe);
+    when(nfeTaxRepository.findByNfe(nfe)).thenReturn(List.of(nfeTax));
+    nfeTaxService.deleteAllByNfeID(nfe.getId());
+    verify(nfeTaxRepository).deleteAll(List.of(nfeTax));
+  }
+
+  @Test
+  @DisplayName("Delete all by Nfe ID throws BadRequestException when no NfeTax is found")
+  void deleteAllByNfeID_ThrowBadRequestException_WhenNfeTaxNotFound() {
+    when(nfeService.findByIdOrThrowBadRequestException(nfe.getId())).thenReturn(nfe);
+    when(nfeTaxRepository.findByNfe(nfe)).thenReturn(Collections.emptyList());
+    Assertions.assertThrows(BadRequestException.class,
+        () -> nfeTaxService.deleteAllByNfeID(nfe.getId()));
+  }
+
+  @Test
+  @DisplayName("Delete All by Nfe Id Thwors BadRequestException when Nfe not found")
+  void deleteAllByNfeID_ThrowBadRequestException_WhenNfeNotFound() {
+    when(nfeService.findByIdOrThrowBadRequestException(any(UUID.class))).thenThrow(
+        new BadRequestException("NFe not Found, Please verify the provided ID"));
+    Assertions.assertThrows(BadRequestException.class,
+        () -> nfeTaxService.deleteAllByNfeID(nfe.getId()));
+  }
+
+  @Test
+  @DisplayName("Delete by NfeTax ID deletes the NfeTax when successful")
+  void deleteByNfeTaxId_ReturnNoContent_WhenSuccessful() {
+    when(nfeTaxRepository.findById(nfeTax.getId())).thenReturn(Optional.of(nfeTax));
+    nfeTaxService.deleteByNfeTaxIdOrThrowBadRequestException(nfeTax.getId());
+    verify(nfeTaxRepository).deleteById(nfeTax.getId());
+  }
+
+  @Test
+  @DisplayName("Delete by NfeTax ID throws BadRequestException when no NfeTax is found")
+  void deleteByNfeTaxId_ThrowBadRequestException_WhenNfeTaxNotFound() {
+    when(nfeTaxRepository.findById(nfeTax.getId())).thenReturn(Optional.empty());
+    Assertions.assertThrows(BadRequestException.class,
+        () -> nfeTaxService.deleteByNfeTaxIdOrThrowBadRequestException(nfeTax.getId()));
   }
 }

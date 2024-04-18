@@ -13,6 +13,7 @@ import onboardingMarcos.tinelli.domain.Taxes;
 import onboardingMarcos.tinelli.dto.SelicDTO;
 import onboardingMarcos.tinelli.exceptions.BadRequestException;
 import onboardingMarcos.tinelli.requests.NfeTaxYearMonthRequestBody;
+import onboardingMarcos.tinelli.service.NfeService;
 import onboardingMarcos.tinelli.service.NfeTaxService;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -25,23 +26,24 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.ResponseEntity;
 
 @ExtendWith(MockitoExtension.class)
-public class NfeTaxControllerTest {
+class NfeTaxControllerTest {
 
   Nfe nfe;
   NfeTax nfeTax;
   Taxes tax;
   SelicDTO selicDTO;
   NfeTaxYearMonthRequestBody nfeTaxYearMonthRequestBody;
-
+  UUID id;
+  @Mock
+  NfeService nfeService;
   @InjectMocks
   private NfeTaxController nfeTaxController;
-
   @Mock
   private NfeTaxService nfeTaxService;
 
   @BeforeEach
   void setUp() {
-    UUID id = UUID.randomUUID();
+    id = UUID.randomUUID();
     nfe = new Nfe(id, 12345678910L, LocalDate.now(), 198.00D);
     tax = new Taxes(id, "ICMS", 17);
     selicDTO = new SelicDTO("Selic", "0.98");
@@ -174,5 +176,19 @@ public class NfeTaxControllerTest {
     Assertions.assertEquals(nfeTaxList.getBody(), List.of());
     Assertions.assertEquals(200, nfeTaxList.getStatusCodeValue());
     verify(nfeTaxService).postEveryNfeWithoutTax();
+  }
+
+  @Test
+  @DisplayName("Delete All by Nfe ID deletes a NfeTax when successful")
+  void deleteAllByNfeId_DeletesNfeTax_WhenSuccessful() {
+    Assertions.assertDoesNotThrow(() -> nfeTaxController.deleteAllByNfeID(id));
+    verify(nfeTaxService).deleteAllByNfeID(id);
+  }
+
+  @Test
+  @DisplayName("Delete by NfeTax ID deletes a NfeTax when successful")
+  void deleteByNfeTaxId_DeletesNfeTax_WhenSuccessful() {
+    Assertions.assertDoesNotThrow(() -> nfeTaxController.deleteByNfeTaxId(id));
+    verify(nfeTaxService).deleteByNfeTaxIdOrThrowBadRequestException(id);
   }
 }

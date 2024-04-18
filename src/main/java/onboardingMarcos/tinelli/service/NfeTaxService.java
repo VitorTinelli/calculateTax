@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.UUID;
-import lombok.extern.slf4j.Slf4j;
 import onboardingMarcos.tinelli.controller.SelicController;
 import onboardingMarcos.tinelli.domain.Nfe;
 import onboardingMarcos.tinelli.domain.NfeTax;
@@ -16,7 +15,6 @@ import onboardingMarcos.tinelli.requests.NfeTaxYearMonthRequestBody;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-@Slf4j
 @Service
 public class NfeTaxService {
 
@@ -45,6 +43,12 @@ public class NfeTaxService {
 
   public ResponseEntity<List<NfeTax>> getByNfeYear(Long year) {
     return ResponseEntity.ok(nfeTaxRepository.findByYear(year));
+  }
+
+  public ResponseEntity<NfeTax> findByIdOrThrowBadRequestException(UUID id) {
+    NfeTax nfeTax = nfeTaxRepository.findById(id).orElseThrow(
+        () -> new BadRequestException("NfeTax not found, please verify the provided ID"));
+    return ResponseEntity.ok(nfeTax);
   }
 
   public ResponseEntity<List<NfeTax>> postEveryNfeWithoutTax() {
@@ -87,6 +91,20 @@ public class NfeTaxService {
     return ResponseEntity.ok(
         nfeTaxRepository.findByMonthAndYear(nfeTaxYearMonthRequestBody.getMonth(),
             nfeTaxYearMonthRequestBody.getYear()));
+  }
+
+  public void deleteAllByNfeID(UUID id) {
+    Nfe nfe = nfeService.findByIdOrThrowBadRequestException(id);
+    List<NfeTax> nfeTax = nfeTaxRepository.findByNfe(nfe);
+    if (nfeTax.isEmpty()) {
+      throw new BadRequestException("No registered NfeTax with this NFE");
+    }
+    nfeTaxRepository.deleteAll(nfeTax);
+  }
+
+  public void deleteByNfeTaxIdOrThrowBadRequestException(UUID id) {
+    findByIdOrThrowBadRequestException(id);
+    nfeTaxRepository.deleteById(id);
   }
 }
 

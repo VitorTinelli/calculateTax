@@ -2,6 +2,7 @@ package onboardingMarcos.tinelli.controller;
 
 import javax.validation.Valid;
 import java.util.List;
+import java.util.UUID;
 import onboardingMarcos.tinelli.domain.NfeTax;
 import onboardingMarcos.tinelli.requests.NfeTaxYearMonthRequestBody;
 import onboardingMarcos.tinelli.service.NfeTaxService;
@@ -43,6 +44,18 @@ public class NfeTaxController {
   @PostMapping("/post-all")
   public ResponseEntity<List<NfeTax>> postAllNfeTax() {
     return nfeTaxService.postEveryNfeWithoutTax();
+  }
+
+  @DeleteMapping("/list-all/{id}")
+  public ResponseEntity<Void> deleteAllByNfeID(@PathVariable UUID id) {
+    nfeTaxService.deleteAllByNfeID(id);
+    return ResponseEntity.noContent().build();
+  }
+
+  @DeleteMapping("/{id}")
+  public ResponseEntity<Void> deleteByNfeTaxId(@PathVariable UUID id) {
+    nfeTaxService.deleteByNfeTaxIdOrThrowBadRequestException(id);
+    return ResponseEntity.noContent().build();
   }
 
 }

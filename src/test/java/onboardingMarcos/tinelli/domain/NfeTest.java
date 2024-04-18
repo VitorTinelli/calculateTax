@@ -45,6 +45,7 @@ class NfeTest {
   @DisplayName("Test the constructor method")
   void testConstructor() {
     Assertions.assertDoesNotThrow(() -> new Nfe(id, 124914L, LocalDate.now(), 950.00D));
+    Assertions.assertDoesNotThrow(() -> new Nfe());
   }
 
 }
