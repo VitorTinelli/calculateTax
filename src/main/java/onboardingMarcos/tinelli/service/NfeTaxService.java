@@ -57,15 +57,12 @@ public class NfeTaxService {
       List<Nfe> sortedNfeList = getNfeListOrThrowBadRequestException();
       List<Taxes> taxesList = taxesService.listAll();
 
-      for (Nfe nfe : sortedNfeList) {
-        for (Taxes taxes : taxesList) {
-          if (nfeTaxRepository.findByNfeAndTaxes(nfe, taxes).isPresent()) {
-            continue;
-          }
-          NfeTax savedNFE = nfeTaxRepository.save(calculateTaxAndCreateConstructor(nfe, taxes));
+      sortedNfeList.forEach(nfe -> taxesList.forEach(tax -> {
+        if (nfeTaxRepository.findByNfeAndTaxes(nfe, tax).isPresent()) {
+          NfeTax savedNFE = nfeTaxRepository.save(calculateTaxAndCreateConstructor(nfe, tax));
           newNfeTaxList.add(savedNFE);
         }
-      }
+      }));
     } catch (Exception exception) {
       throw new BadRequestException(exception.getMessage());
     }
@@ -82,16 +79,14 @@ public class NfeTaxService {
         throw new BadRequestException("No NFEs found");
       }
       List<Taxes> taxesList = taxesService.listAll();
-      for (Nfe nfe : nfeList) {
-        for (Taxes taxes : taxesList) {
-          if (nfeTaxRepository.findByNfeAndTaxes(nfe, taxes).isPresent()) {
 
-            continue;
-          }
-          NfeTax savedNFE = nfeTaxRepository.save(calculateTaxAndCreateConstructor(nfe, taxes));
+      nfeList.forEach(nfe -> taxesList.forEach(tax -> {
+        if (nfeTaxRepository.findByNfeAndTaxes(nfe, tax).isEmpty()) {
+          NfeTax savedNFE = nfeTaxRepository.save(calculateTaxAndCreateConstructor(nfe, tax));
           newNfeTaxList.add(savedNFE);
         }
-      }
+      }));
+
     } catch (Exception exception) {
       throw new BadRequestException(exception.getMessage());
     }
