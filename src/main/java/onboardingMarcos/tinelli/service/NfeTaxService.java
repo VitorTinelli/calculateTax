@@ -15,6 +15,7 @@ import onboardingMarcos.tinelli.repository.NfeTaxRepository;
 import onboardingMarcos.tinelli.requests.NfeTaxYearMonthRequestBody;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class NfeTaxService {
@@ -69,6 +70,7 @@ public class NfeTaxService {
     return ResponseEntity.ok(newNfeTaxList);
   }
 
+  @Transactional
   public ResponseEntity<List<NfeTax>> postEveryNfeWithoutTaxByDateGap(LocalDate start,
       LocalDate end) {
     try {

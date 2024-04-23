@@ -10,6 +10,7 @@ import onboardingMarcos.tinelli.requests.TaxesPostRequestBody;
 import onboardingMarcos.tinelli.requests.TaxesPutRequestBody;
 import onboardingMarcos.tinelli.util.Verifications;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class TaxesService {
@@ -30,6 +31,7 @@ public class TaxesService {
             "Taxes not Found, Please verify the provided ID"));
   }
 
+  @Transactional
   public Taxes save(TaxesPostRequestBody taxesPostRequestBody) {
     try {
       Verifications.verificationTaxesPOST(taxesPostRequestBody);

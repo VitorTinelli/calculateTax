@@ -10,6 +10,7 @@ import onboardingMarcos.tinelli.requests.NfePostRequestBody;
 import onboardingMarcos.tinelli.requests.NfePutRequestBody;
 import onboardingMarcos.tinelli.util.Verifications;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class NfeService {
@@ -30,6 +31,7 @@ public class NfeService {
             "NFe not Found, Please verify the provided ID"));
   }
 
+  @Transactional
   public Nfe save(NfePostRequestBody nfePostRequestBody) {
     try {
       Verifications.verificationNFEPOST(nfePostRequestBody);
