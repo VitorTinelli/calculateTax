@@ -53,7 +53,16 @@ public class NfeTaxService {
     return ResponseEntity.ok(nfeTax);
   }
 
+  public ResponseEntity<List<NfeTax>> getByNfeMonthAndYear(
+      NfeTaxYearMonthRequestBody nfeTaxYearMonthRequestBody) {
+    return ResponseEntity.ok(
+        nfeTaxRepository.findByMonthAndYear(nfeTaxYearMonthRequestBody.getMonth(),
+            nfeTaxYearMonthRequestBody.getYear()));
+  }
+
+  @Transactional
   public ResponseEntity<List<NfeTax>> postEveryNfeWithoutTax() {
+    newNfeTaxList.clear();
     try {
       List<Nfe> sortedNfeList = getNfeListOrThrowBadRequestException();
       List<Taxes> taxesList = taxesService.listAll();
@@ -73,6 +82,7 @@ public class NfeTaxService {
   @Transactional
   public ResponseEntity<List<NfeTax>> postEveryNfeWithoutTaxByDateGap(LocalDate start,
       LocalDate end) {
+    newNfeTaxList.clear();
     try {
       List<Nfe> nfeList = nfeService.findByTimeGap(start, end);
       if (!nfeList.isEmpty()) {
@@ -115,13 +125,6 @@ public class NfeTaxService {
         Double.parseDouble(formatter.format(taxedValue)),
         Double.parseDouble(formatter.format(taxedValue - nfe.getValue())),
         nfe.getDate().getMonth().toString(), nfe.getDate().getYear());
-  }
-
-  public ResponseEntity<List<NfeTax>> getByNfeMonthAndYear(
-      NfeTaxYearMonthRequestBody nfeTaxYearMonthRequestBody) {
-    return ResponseEntity.ok(
-        nfeTaxRepository.findByMonthAndYear(nfeTaxYearMonthRequestBody.getMonth(),
-            nfeTaxYearMonthRequestBody.getYear()));
   }
 
   public void deleteAllByNfeID(UUID id) {
