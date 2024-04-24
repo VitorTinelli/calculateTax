@@ -7,6 +7,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import vitor.tinelli.domain.Nfe;
+import vitor.tinelli.requests.DateGapRequestBody;
 import vitor.tinelli.requests.NfePostRequestBody;
 import vitor.tinelli.requests.NfePutRequestBody;
 import vitor.tinelli.service.NfeService;
@@ -26,6 +27,12 @@ public class NfeController {
   @GetMapping("/{id}")
   public ResponseEntity<Nfe> findById(@PathVariable UUID id) {
     return ResponseEntity.ok(nfeService.findByIdOrThrowBadRequestException(id));
+  }
+
+  @GetMapping("/date")
+  public ResponseEntity<List<Nfe>> findByDateGap(@RequestBody @Valid DateGapRequestBody dateGap) {
+    return ResponseEntity.ok(
+        nfeService.findByDateGap(dateGap.getStartDate(), dateGap.getEndDate()));
   }
 
   @PostMapping

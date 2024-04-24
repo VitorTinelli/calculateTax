@@ -1,6 +1,7 @@
 package vitor.tinelli.service;
 
 import javax.transaction.Transactional;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.UUID;
 import org.springframework.stereotype.Service;
@@ -53,5 +54,9 @@ public class NfeService {
         .date(nfePutRequestBody.getDate())
         .value(nfePutRequestBody.getValue())
         .build());
+  }
+
+  public List<Nfe> findByDateGap(LocalDate startDate, LocalDate endDate) {
+    return nfeRepository.findByDateBetween(startDate, endDate);
   }
 }
