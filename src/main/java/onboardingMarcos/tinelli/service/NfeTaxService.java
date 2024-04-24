@@ -68,7 +68,7 @@ public class NfeTaxService {
       List<Taxes> taxesList = taxesService.listAll();
 
       sortedNfeList.forEach(nfe -> taxesList.forEach(tax -> {
-        if (nfeTaxRepository.findByNfeAndTaxes(nfe, tax).isPresent()) {
+        if (nfeTaxRepository.findByNfeAndTaxes(nfe, tax).isEmpty()) {
           NfeTax savedNFE = nfeTaxRepository.save(calculateTaxAndCreateConstructor(nfe, tax));
           newNfeTaxList.add(savedNFE);
         }
