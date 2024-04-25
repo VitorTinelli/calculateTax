@@ -75,7 +75,7 @@ class NfeTaxServiceTest {
     when(nfeService.findByIdOrThrowBadRequestException(nfe.getId())).thenReturn(nfe);
     when(nfeTaxRepository.findByNfe(nfe)).thenReturn(List.of(nfeTax));
 
-    ResponseEntity<List<NfeTax>> savedNfeTax = nfeTaxService.getByNfeId(nfe.getId().toString());
+    ResponseEntity<List<NfeTax>> savedNfeTax = nfeTaxService.getByNfeId(nfe.getId());
     Assertions.assertEquals(List.of(nfeTax), savedNfeTax.getBody());
   }
 
@@ -86,7 +86,7 @@ class NfeTaxServiceTest {
         new BadRequestException("NFe not Found, Please verify the provided ID"));
 
     Assertions.assertThrows(BadRequestException.class,
-        () -> nfeTaxService.getByNfeId(nfe.getId().toString()));
+        () -> nfeTaxService.getByNfeId(nfe.getId()));
   }
 
   @Test

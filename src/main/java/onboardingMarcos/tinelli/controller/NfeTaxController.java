@@ -26,9 +26,9 @@ public class NfeTaxController {
     return nfeTaxService.listAll();
   }
 
-  @GetMapping("/list/{uuid}")
-  public ResponseEntity<List<NfeTax>> getByNfeId(@PathVariable String uuid) {
-    return nfeTaxService.getByNfeId(uuid);
+  @GetMapping("/list/{id}")
+  public ResponseEntity<List<NfeTax>> getByNfeId(@PathVariable UUID id) {
+    return nfeTaxService.getByNfeId(id);
   }
 
   @GetMapping("/{id}")

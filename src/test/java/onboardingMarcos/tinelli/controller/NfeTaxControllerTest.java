@@ -88,25 +88,24 @@ class NfeTaxControllerTest {
   @Test
   @DisplayName("getByNfeId returns list of nfeTax (With the same ID) when successful")
   void getByNfeId_ReturnListOfNfeTax_WhenSuccessful() {
-    when(nfeTaxService.getByNfeId(nfe.getId().toString())).thenReturn(
+    when(nfeTaxService.getByNfeId(nfe.getId())).thenReturn(
         ResponseEntity.ok(List.of(nfeTax)));
 
     ResponseEntity<List<NfeTax>> nfeTaxList = nfeTaxController.getByNfeId(
-        nfe.getId().toString());
+        nfe.getId());
     Assertions.assertEquals(nfeTaxList.getBody(), List.of(nfeTax));
     Assertions.assertEquals(200, nfeTaxList.getStatusCodeValue());
-    verify(nfeTaxService).getByNfeId(nfe.getId().toString());
+    verify(nfeTaxService).getByNfeId(nfe.getId());
   }
 
   @Test
   @DisplayName("getByNfeId returns BadRequestException when nfeTax (With the same ID) list is empty")
   void getByNfeId_ReturnBadRequestException_WhenNfeNotExist() {
-    when(nfeTaxService.getByNfeId(nfe.getId().toString())).thenThrow(
+    when(nfeTaxService.getByNfeId(nfe.getId())).thenThrow(
         new BadRequestException("Nfe not found"));
-
     Assertions.assertThrows(BadRequestException.class,
-        () -> nfeTaxController.getByNfeId(nfe.getId().toString()));
-    verify(nfeTaxService).getByNfeId(nfe.getId().toString());
+        () -> nfeTaxController.getByNfeId(nfe.getId()));
+    verify(nfeTaxService).getByNfeId(nfe.getId());
   }
 
   @Test

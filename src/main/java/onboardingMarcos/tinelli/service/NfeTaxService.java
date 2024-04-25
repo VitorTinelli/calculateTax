@@ -38,9 +38,9 @@ public class NfeTaxService {
     return ResponseEntity.ok(nfeTaxRepository.findAll());
   }
 
-  public ResponseEntity<List<NfeTax>> getByNfeId(String uuid) {
+  public ResponseEntity<List<NfeTax>> getByNfeId(UUID id) {
     return ResponseEntity.ok(nfeTaxRepository.findByNfe(
-        nfeService.findByIdOrThrowBadRequestException(UUID.fromString(uuid))));
+        nfeService.findByIdOrThrowBadRequestException(id)));
   }
 
   public ResponseEntity<List<NfeTax>> getByNfeYear(Long year) {
