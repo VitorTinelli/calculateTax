@@ -22,7 +22,7 @@ public class UserService implements UserDetailsService {
 
   private final UsersRepository usersRepository;
 
-  public UserService(UsersRepository usersRepository) {
+  public UserService(final UsersRepository usersRepository) {
     this.usersRepository = usersRepository;
 
   }

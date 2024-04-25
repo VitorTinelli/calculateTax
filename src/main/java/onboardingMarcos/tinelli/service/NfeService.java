@@ -17,7 +17,7 @@ public class NfeService {
 
   private final NfeRepository nfeRepository;
 
-  public NfeService(NfeRepository nfeRepository) {
+  public NfeService(final NfeRepository nfeRepository) {
     this.nfeRepository = nfeRepository;
   }
 

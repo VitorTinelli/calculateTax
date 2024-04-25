@@ -17,7 +17,7 @@ public class NfeTaxController {
 
   private final NfeTaxService nfeTaxService;
 
-  public NfeTaxController(NfeTaxService nfeTaxService) {
+  public NfeTaxController(final NfeTaxService nfeTaxService) {
     this.nfeTaxService = nfeTaxService;
   }
 

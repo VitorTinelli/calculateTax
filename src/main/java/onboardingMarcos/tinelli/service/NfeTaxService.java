@@ -26,8 +26,8 @@ public class NfeTaxService {
   private final SelicController selicController;
   private final List<NfeTax> newNfeTaxList = new ArrayList<>();
 
-  public NfeTaxService(NfeTaxRepository nfeTaxRepository, NfeService nfeService,
-      TaxesService taxesService, SelicController selicController) {
+  public NfeTaxService(final NfeTaxRepository nfeTaxRepository, final NfeService nfeService,
+      final TaxesService taxesService, final SelicController selicController) {
     this.nfeTaxRepository = nfeTaxRepository;
     this.nfeService = nfeService;
     this.taxesService = taxesService;

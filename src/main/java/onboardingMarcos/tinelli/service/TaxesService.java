@@ -17,7 +17,7 @@ public class TaxesService {
 
   private final TaxesRepository taxesRepository;
 
-  public TaxesService(TaxesRepository taxesRepository) {
+  public TaxesService(final TaxesRepository taxesRepository) {
     this.taxesRepository = taxesRepository;
   }
 

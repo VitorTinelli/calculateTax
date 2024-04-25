@@ -15,7 +15,7 @@ public class TaxesController {
 
   private final TaxesService taxesService;
 
-  public TaxesController(TaxesService taxesService) {
+  public TaxesController(final TaxesService taxesService) {
     this.taxesService = taxesService;
   }
 

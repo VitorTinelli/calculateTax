@@ -16,7 +16,7 @@ public class NfeController {
 
   private final NfeService nfeService;
 
-  public NfeController(NfeService nfeService) {
+  public NfeController(final NfeService nfeService) {
     this.nfeService = nfeService;
   }
 
