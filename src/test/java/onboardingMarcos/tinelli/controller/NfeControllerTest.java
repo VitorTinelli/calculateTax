@@ -78,6 +78,28 @@ public class NfeControllerTest {
   }
 
   @Test
+  @DisplayName("findByNumber returns nfe when successful")
+  void findByNumber_ReturnNfe_WhenSuccessful() {
+    when(nfeService.findByNumber(any(nfe.getNumber().getClass()))).thenReturn(nfe);
+
+    Assertions.assertEquals(nfeController.findByNumber(nfe.getNumber()).getBody(), nfe);
+    verify(nfeService).findByNumber(any(nfe.getNumber().getClass()));
+    verifyNoMoreInteractions(nfeService);
+  }
+
+  @Test
+  @DisplayName("Find by Number Throws Bad exception error when NFE not exist")
+  void findByNumber_TrowsBadRequestException_WhenNfeNotExist() {
+    when(nfeService.findByNumber(any(nfe.getNumber().getClass()))).thenThrow(
+        new BadRequestException("Nfe not found"));
+
+    Assertions.assertThrows(BadRequestException.class,
+        () -> nfeController.findByNumber(nfe.getNumber()));
+    verify(nfeService).findByNumber(any(nfe.getNumber().getClass()));
+    verifyNoMoreInteractions(nfeService);
+  }
+
+  @Test
   @DisplayName("findById returns nfe when successful")
   void findById_ReturnNfe_WhenSuccessful() {
     when(nfeService.findByIdOrThrowBadRequestException(any(UUID.class))).thenReturn(nfe);
@@ -133,7 +155,7 @@ public class NfeControllerTest {
   }
 
   @Test
-  @DisplayName("listAllByTimeGap returns list of nfe when successful")
+  @DisplayName("listAllByTimeGap returns empty list when no nfe found")
   void listAllByTimeGap_ReturnEmptyList_WhenNoNfeFound() {
     when(nfeService.findByTimeGap(any(LocalDate.class), any(LocalDate.class))).thenReturn(
         Collections.emptyList());

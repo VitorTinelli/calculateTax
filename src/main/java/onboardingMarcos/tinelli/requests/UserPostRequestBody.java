@@ -4,7 +4,6 @@ public class UserPostRequestBody {
 
   private String name;
   private Long cpf;
-  private String username;
   private String password;
   private String userType;
 
@@ -39,7 +38,7 @@ public class UserPostRequestBody {
   }
 
   public void setUsername(String username) {
-    this.username = username;
+    this.cpf = Long.parseLong(username);
   }
 
   public String getPassword() {

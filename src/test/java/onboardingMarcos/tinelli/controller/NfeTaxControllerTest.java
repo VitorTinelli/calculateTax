@@ -69,7 +69,7 @@ class NfeTaxControllerTest {
     when(nfeTaxService.listAll()).thenReturn(
         ResponseEntity.ok(List.of(nfeTax)));
 
-    ResponseEntity<List<NfeTax>> nfeTaxList = nfeTaxController.listAll();
+    ResponseEntity<List<NfeTax>> nfeTaxList = nfeTaxController.listAllNfeTax();
     Assertions.assertEquals(nfeTaxList.getBody(), List.of(nfeTax));
     Assertions.assertEquals(nfeTaxList.getStatusCodeValue(), 200);
     verify(nfeTaxService).listAll();
@@ -81,7 +81,7 @@ class NfeTaxControllerTest {
     when(nfeTaxService.listAll()).thenThrow(
         new BadRequestException("No NFEs found"));
 
-    Assertions.assertThrows(BadRequestException.class, () -> nfeTaxController.listAll());
+    Assertions.assertThrows(BadRequestException.class, () -> nfeTaxController.listAllNfeTax());
     verify(nfeTaxService).listAll();
   }
 
@@ -91,7 +91,8 @@ class NfeTaxControllerTest {
     when(nfeTaxService.getByNfeId(nfe.getId().toString())).thenReturn(
         ResponseEntity.ok(List.of(nfeTax)));
 
-    ResponseEntity<List<NfeTax>> nfeTaxList = nfeTaxController.getByNfeId(nfe.getId().toString());
+    ResponseEntity<List<NfeTax>> nfeTaxList = nfeTaxController.getByNfeId(
+        nfe.getId().toString());
     Assertions.assertEquals(nfeTaxList.getBody(), List.of(nfeTax));
     Assertions.assertEquals(200, nfeTaxList.getStatusCodeValue());
     verify(nfeTaxService).getByNfeId(nfe.getId().toString());
@@ -109,12 +110,35 @@ class NfeTaxControllerTest {
   }
 
   @Test
+  @DisplayName("getByNfeTaxId returns nfeTax (With the same ID) when successful")
+  void getByNfeTaxId_ReturnNfeTax_WhenSuccessful() {
+    when(nfeTaxService.findByIdOrThrowBadRequestException(nfe.getId())).thenReturn(
+        ResponseEntity.ok(nfeTax));
+
+    ResponseEntity<NfeTax> nfeTaxResponse = nfeTaxController.getByNfeTaxId(id);
+    Assertions.assertEquals(nfeTaxResponse.getBody(), nfeTax);
+    Assertions.assertEquals(200, nfeTaxResponse.getStatusCodeValue());
+    verify(nfeTaxService).findByIdOrThrowBadRequestException(id);
+  }
+
+  @Test
+  @DisplayName("getByNfeTaxId returns BadRequestException when nfeTax (With the same ID) is not found")
+  void getByNfeTaxId_ReturnBadRequestException_WhenNfeNotExist() {
+    when(nfeTaxService.findByIdOrThrowBadRequestException(nfe.getId())).thenThrow(
+        new BadRequestException("NfeTax not found"));
+
+    Assertions.assertThrows(BadRequestException.class,
+        () -> nfeTaxController.getByNfeTaxId(id));
+    verify(nfeTaxService).findByIdOrThrowBadRequestException(id);
+  }
+
+  @Test
   @DisplayName("getByNfeYear returns list of nfeTax (With the same year) when successful")
   void getByNfeYear_ReturnListOfNfeTax_WhenSuccessful() {
     when(nfeTaxService.getByNfeYear(any(Long.class))).thenReturn(
         ResponseEntity.ok(List.of(nfeTax)));
 
-    ResponseEntity<List<NfeTax>> nfeTaxList = nfeTaxController.getByNfeYear(2022L);
+    ResponseEntity<List<NfeTax>> nfeTaxList = nfeTaxController.getAllByNfeTaxYear(2022L);
     Assertions.assertEquals(nfeTaxList.getBody(), List.of(nfeTax));
     Assertions.assertEquals(200, nfeTaxList.getStatusCodeValue());
     verify(nfeTaxService).getByNfeYear(2022L);
@@ -126,7 +150,7 @@ class NfeTaxControllerTest {
     when(nfeTaxService.getByNfeYear(any(Long.class))).thenReturn(
         ResponseEntity.ok(List.of()));
 
-    ResponseEntity<List<NfeTax>> nfeTaxList = nfeTaxController.getByNfeYear(2022L);
+    ResponseEntity<List<NfeTax>> nfeTaxList = nfeTaxController.getAllByNfeTaxYear(2022L);
     Assertions.assertEquals(nfeTaxList.getBody(), List.of());
     Assertions.assertEquals(200, nfeTaxList.getStatusCodeValue());
     verify(nfeTaxService).getByNfeYear(2022L);
@@ -138,7 +162,7 @@ class NfeTaxControllerTest {
     when(nfeTaxService.getByNfeMonthAndYear(any(NfeTaxYearMonthRequestBody.class))).thenReturn(
         ResponseEntity.ok(List.of(nfeTax)));
 
-    ResponseEntity<List<NfeTax>> nfeTaxList = nfeTaxController.getByNfeYearAndMonth(
+    ResponseEntity<List<NfeTax>> nfeTaxList = nfeTaxController.getAllByNfeTaxYearAndMonth(
         nfeTaxYearMonthRequestBody);
     Assertions.assertEquals(nfeTaxList.getBody(), List.of(nfeTax));
     Assertions.assertEquals(200, nfeTaxList.getStatusCodeValue());
@@ -151,7 +175,7 @@ class NfeTaxControllerTest {
     when(nfeTaxService.getByNfeMonthAndYear(any(NfeTaxYearMonthRequestBody.class))).thenReturn(
         ResponseEntity.ok(List.of()));
 
-    ResponseEntity<List<NfeTax>> nfeTaxList = nfeTaxController.getByNfeYearAndMonth(
+    ResponseEntity<List<NfeTax>> nfeTaxList = nfeTaxController.getAllByNfeTaxYearAndMonth(
         nfeTaxYearMonthRequestBody);
     Assertions.assertEquals(nfeTaxList.getBody(), List.of());
     Assertions.assertEquals(200, nfeTaxList.getStatusCodeValue());
@@ -164,7 +188,7 @@ class NfeTaxControllerTest {
     when(nfeTaxService.postEveryNfeWithoutTax()).thenReturn(
         ResponseEntity.ok(List.of(nfeTax)));
 
-    ResponseEntity<List<NfeTax>> nfeTaxList = nfeTaxController.postAllNfeTax();
+    ResponseEntity<List<NfeTax>> nfeTaxList = nfeTaxController.postAllUntaxedNfeTax();
     Assertions.assertEquals(nfeTaxList.getBody(), List.of(nfeTax));
     Assertions.assertEquals(200, nfeTaxList.getStatusCodeValue());
     verify(nfeTaxService).postEveryNfeWithoutTax();
@@ -176,7 +200,7 @@ class NfeTaxControllerTest {
     when(nfeTaxService.postEveryNfeWithoutTax()).thenReturn(
         ResponseEntity.ok(List.of()));
 
-    ResponseEntity<List<NfeTax>> nfeTaxList = nfeTaxController.postAllNfeTax();
+    ResponseEntity<List<NfeTax>> nfeTaxList = nfeTaxController.postAllUntaxedNfeTax();
     Assertions.assertEquals(nfeTaxList.getBody(), List.of());
     Assertions.assertEquals(200, nfeTaxList.getStatusCodeValue());
     verify(nfeTaxService).postEveryNfeWithoutTax();
@@ -188,7 +212,7 @@ class NfeTaxControllerTest {
     when(nfeTaxService.postEveryNfeWithoutTaxByDateGap(any(LocalDate.class), any(LocalDate.class)))
         .thenReturn(ResponseEntity.ok(List.of(nfeTax)));
 
-    ResponseEntity<List<NfeTax>> nfeTaxList = nfeTaxController.postAllNfeTaxByDateGap(
+    ResponseEntity<List<NfeTax>> nfeTaxList = nfeTaxController.postAllUntaxedNfeTaxByDateGap(
         dateGapRequestBody);
     Assertions.assertEquals(nfeTaxList.getBody(), List.of(nfeTax));
     Assertions.assertEquals(200, nfeTaxList.getStatusCodeValue());
@@ -202,7 +226,7 @@ class NfeTaxControllerTest {
     when(nfeTaxService.postEveryNfeWithoutTaxByDateGap(any(LocalDate.class), any(LocalDate.class)))
         .thenReturn(ResponseEntity.ok(List.of()));
 
-    ResponseEntity<List<NfeTax>> nfeTaxList = nfeTaxController.postAllNfeTaxByDateGap(
+    ResponseEntity<List<NfeTax>> nfeTaxList = nfeTaxController.postAllUntaxedNfeTaxByDateGap(
         dateGapRequestBody);
     Assertions.assertEquals(nfeTaxList.getBody(), List.of());
     Assertions.assertEquals(200, nfeTaxList.getStatusCodeValue());

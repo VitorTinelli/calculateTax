@@ -30,6 +30,18 @@ public class NfeController {
     return ResponseEntity.ok(nfeService.findByIdOrThrowBadRequestException(id));
   }
 
+  @GetMapping("/number/{number}")
+  public ResponseEntity<Nfe> findByNumber(@PathVariable Long number) {
+    return ResponseEntity.ok(nfeService.findByNumber(number));
+  }
+
+  @GetMapping("/date")
+  public ResponseEntity<List<Nfe>> listAllByTimeGap(
+      @RequestBody DateGapRequestBody dateGapRequestBody) {
+    return ResponseEntity.ok(nfeService.findByTimeGap(dateGapRequestBody.getStartDate(),
+        dateGapRequestBody.getEndDate()));
+  }
+
   @PostMapping
   public ResponseEntity<Nfe> save(@RequestBody NfePostRequestBody nfePostRequestBody) {
     return ResponseEntity.ok(nfeService.save(nfePostRequestBody));
@@ -45,13 +57,5 @@ public class NfeController {
   public ResponseEntity<Void> replace(@RequestBody NfePutRequestBody nfePutRequestBody) {
     nfeService.replace(nfePutRequestBody);
     return ResponseEntity.noContent().build();
-  }
-
-
-  @GetMapping("/date")
-  public ResponseEntity<List<Nfe>> listAllByTimeGap(
-      @RequestBody DateGapRequestBody dateGapRequestBody) {
-    return ResponseEntity.ok(nfeService.findByTimeGap(dateGapRequestBody.getStartDate(),
-        dateGapRequestBody.getEndDate()));
   }
 }

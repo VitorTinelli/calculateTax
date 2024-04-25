@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.*;
 
 
 @RestController
-@RequestMapping("/gerente")
+@RequestMapping("/taxedNfe")
 public class NfeTaxController {
 
   private final NfeTaxService nfeTaxService;
@@ -22,33 +22,38 @@ public class NfeTaxController {
   }
 
   @GetMapping("/list-all")
-  public ResponseEntity<List<NfeTax>> listAll() {
+  public ResponseEntity<List<NfeTax>> listAllNfeTax() {
     return nfeTaxService.listAll();
   }
 
-  @GetMapping("/{uuid}")
+  @GetMapping("/list/{uuid}")
   public ResponseEntity<List<NfeTax>> getByNfeId(@PathVariable String uuid) {
     return nfeTaxService.getByNfeId(uuid);
   }
 
+  @GetMapping("/{id}")
+  public ResponseEntity<NfeTax> getByNfeTaxId(@PathVariable UUID id) {
+    return nfeTaxService.findByIdOrThrowBadRequestException(id);
+  }
+
   @GetMapping("/list-all/{year}")
-  public ResponseEntity<List<NfeTax>> getByNfeYear(@PathVariable Long year) {
+  public ResponseEntity<List<NfeTax>> getAllByNfeTaxYear(@PathVariable Long year) {
     return nfeTaxService.getByNfeYear(year);
   }
 
-  @GetMapping("/list-month")
-  public ResponseEntity<List<NfeTax>> getByNfeYearAndMonth(
+  @GetMapping("/list-all/month-year")
+  public ResponseEntity<List<NfeTax>> getAllByNfeTaxYearAndMonth(
       @RequestBody @Valid NfeTaxYearMonthRequestBody nfeTaxYearMonthRequestBody) {
     return nfeTaxService.getByNfeMonthAndYear(nfeTaxYearMonthRequestBody);
   }
 
   @PostMapping("/post-all")
-  public ResponseEntity<List<NfeTax>> postAllNfeTax() {
+  public ResponseEntity<List<NfeTax>> postAllUntaxedNfeTax() {
     return nfeTaxService.postEveryNfeWithoutTax();
   }
 
   @PostMapping("/post-all/date")
-  public ResponseEntity<List<NfeTax>> postAllNfeTaxByDateGap(
+  public ResponseEntity<List<NfeTax>> postAllUntaxedNfeTaxByDateGap(
       @RequestBody DateGapRequestBody dateGapRequestBody) {
     return nfeTaxService.postEveryNfeWithoutTaxByDateGap(dateGapRequestBody.getStartDate(),
         dateGapRequestBody.getEndDate());

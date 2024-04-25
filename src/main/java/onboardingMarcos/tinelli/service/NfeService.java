@@ -31,6 +31,16 @@ public class NfeService {
             "NFe not Found, Please verify the provided ID"));
   }
 
+  public List<Nfe> findByTimeGap(LocalDate start, LocalDate end) {
+    return nfeRepository.findByDateBetween(start, end);
+  }
+
+  public Nfe findByNumber(Long number) {
+    return nfeRepository.findByNumber(number)
+        .orElseThrow(() -> new BadRequestException(
+            "NFe not Found, Please verify the provided Number"));
+  }
+
   @Transactional
   public Nfe save(NfePostRequestBody nfePostRequestBody) {
     try {
@@ -74,7 +84,4 @@ public class NfeService {
     }
   }
 
-  public List<Nfe> findByTimeGap(LocalDate start, LocalDate end) {
-    return nfeRepository.findByDateBetween(start, end);
-  }
 }
