@@ -37,8 +37,8 @@ public class NfeTaxController {
   }
 
   @GetMapping("/list-month")
-  public ResponseEntity<List<NfeTax>> getByNfeYearAndMonth(@RequestBody @Valid
-  NfeTaxYearMonthRequestBody nfeTaxYearMonthRequestBody) {
+  public ResponseEntity<List<NfeTax>> getByNfeYearAndMonth(
+      @RequestBody @Valid NfeTaxYearMonthRequestBody nfeTaxYearMonthRequestBody) {
     return nfeTaxService.getByNfeMonthAndYear(nfeTaxYearMonthRequestBody);
   }
 
@@ -54,13 +54,13 @@ public class NfeTaxController {
         dateGapRequestBody.getEndDate());
   }
 
-  @DeleteMapping("/list-all/{id}")
+  @DeleteMapping("/delete-all/{id}")
   public ResponseEntity<Void> deleteAllByNfeID(@PathVariable UUID id) {
     nfeTaxService.deleteAllByNfeID(id);
     return ResponseEntity.noContent().build();
   }
 
-  @DeleteMapping("/{id}")
+  @DeleteMapping("/delete/{id}")
   public ResponseEntity<Void> deleteByNfeTaxId(@PathVariable UUID id) {
     nfeTaxService.deleteByNfeTaxIdOrThrowBadRequestException(id);
     return ResponseEntity.noContent().build();

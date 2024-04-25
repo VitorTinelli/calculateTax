@@ -64,10 +64,14 @@ public class NfeTaxService {
   public ResponseEntity<List<NfeTax>> postEveryNfeWithoutTax() {
     newNfeTaxList.clear();
     try {
-      List<Nfe> sortedNfeList = getNfeListOrThrowBadRequestException();
+      List<Nfe> nfeList = nfeService.listAll();
+      if (!nfeList.isEmpty()) {
+        nfeList.sort(Comparator.comparing(Nfe::getDate));
+      } else {
+        throw new BadRequestException("No NFEs found");
+      }
       List<Taxes> taxesList = taxesService.listAll();
-
-      sortedNfeList.forEach(nfe -> taxesList.forEach(tax -> {
+      nfeList.forEach(nfe -> taxesList.forEach(tax -> {
         if (nfeTaxRepository.findByNfeAndTaxes(nfe, tax).isEmpty()) {
           NfeTax savedNFE = nfeTaxRepository.save(calculateTaxAndCreateConstructor(nfe, tax));
           newNfeTaxList.add(savedNFE);
@@ -103,16 +107,6 @@ public class NfeTaxService {
       throw new BadRequestException(exception.getMessage());
     }
     return ResponseEntity.ok(newNfeTaxList);
-  }
-
-  public List<Nfe> getNfeListOrThrowBadRequestException() {
-    List<Nfe> nfeList = nfeService.listAll();
-    if (!nfeList.isEmpty()) {
-      nfeList.sort(Comparator.comparing(Nfe::getDate));
-    } else {
-      throw new BadRequestException("No NFEs found");
-    }
-    return nfeList;
   }
 
   public NfeTax calculateTaxAndCreateConstructor(Nfe nfe, Taxes taxes) {
