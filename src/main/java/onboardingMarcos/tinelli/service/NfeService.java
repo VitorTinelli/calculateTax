@@ -2,6 +2,7 @@ package onboardingMarcos.tinelli.service;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Objects;
 import java.util.UUID;
 import onboardingMarcos.tinelli.domain.Nfe;
 import onboardingMarcos.tinelli.exceptions.BadRequestException;
@@ -35,16 +36,23 @@ public class NfeService {
     return nfeRepository.findByDateBetween(start, end);
   }
 
-  public Nfe findByNumber(Long number) {
+  public Nfe findByNumberOrThrowBadRequestException(Long number) {
     return nfeRepository.findByNumber(number)
         .orElseThrow(() -> new BadRequestException(
             "NFe not Found, Please verify the provided Number"));
+  }
+
+  public Nfe findByNumberOrReturnNull(Long number) {
+    return nfeRepository.findByNumber(number).orElse(null);
   }
 
   @Transactional
   public Nfe save(NfePostRequestBody nfePostRequestBody) {
     try {
       Verifications.verificationNFEPOST(nfePostRequestBody);
+      if (findByNumberOrReturnNull(nfePostRequestBody.getNumber()) != null) {
+        throw new BadRequestException("NFe already exists, please verify the provided Number");
+      }
       return nfeRepository.save(
           new Nfe(
               UUID.randomUUID(),
@@ -71,6 +79,10 @@ public class NfeService {
     try {
       Verifications.verificationNFEPUT(nfePutRequestBody);
       Nfe savedNfe = findByIdOrThrowBadRequestException(nfePutRequestBody.getId());
+      if (findByNumberOrReturnNull(nfePutRequestBody.getNumber()) != null
+          && !Objects.equals(savedNfe.getNumber(), nfePutRequestBody.getNumber())) {
+        throw new BadRequestException("NFe already exists, please verify the provided Number");
+      }
       nfeRepository.save(
           new Nfe(
               savedNfe.getId(),

@@ -22,7 +22,8 @@ public class SecurityConfig {
 
   @Bean
   public SecurityFilterChain filterChain(HttpSecurity httpSecurity) throws Exception {
-    return httpSecurity.csrf().disable().authorizeHttpRequests(
+    return httpSecurity.csrf().disable()
+        .authorizeRequests(
             auth -> auth.antMatchers("/taxedNfe/post**/**").hasAuthority("gerente")
                 .antMatchers("/taxedNfe/delete**/**").hasAuthority("gerente").anyRequest()
                 .authenticated()).httpBasic(Customizer.withDefaults())

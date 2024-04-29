@@ -32,7 +32,7 @@ public class NfeController {
 
   @GetMapping("/number/{number}")
   public ResponseEntity<Nfe> findByNumber(@PathVariable Long number) {
-    return ResponseEntity.ok(nfeService.findByNumber(number));
+    return ResponseEntity.ok(nfeService.findByNumberOrThrowBadRequestException(number));
   }
 
   @GetMapping("/date")

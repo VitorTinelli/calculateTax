@@ -66,20 +66,23 @@ public class Verifications {
     if (nfe.getValue() < 0) {
       throw new BadRequestException("Value must be greater than 0");
     }
+    if (nfe.getNumber().toString().isBlank()) {
+      throw new BadRequestException("You have to fill all fields");
+    }
   }
 
-  public static void verificationNFEPUT(NfePutRequestBody nfePutRequestBody) {
-    if (nfePutRequestBody.getNumber().toString().isBlank()) {
+  public static void verificationNFEPUT(NfePutRequestBody nfe) {
+    if (nfe.getNumber().toString().isBlank()) {
       throw new BadRequestException("You have to fill all fields");
     }
-    if (nfePutRequestBody.getDate().isAfter(LocalDate.now())) {
+    if (nfe.getDate().isAfter(LocalDate.now())) {
       throw new BadRequestException("Date must be before or today");
     }
-    if (nfePutRequestBody.getValue() < 0) {
+    if (nfe.getValue() < 0) {
       throw new BadRequestException("Value must be greater than 0");
     }
-    if (nfePutRequestBody.getId() == null) {
-      throw new BadRequestException("You have to fill all fields");
+    if (nfe.getId() == null) {
+      throw new BadRequestException("You have to inform the NFE ID");
     }
 
   }

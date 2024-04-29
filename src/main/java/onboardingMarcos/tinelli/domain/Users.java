@@ -39,7 +39,6 @@ public class Users implements UserDetails {
   public Users() {
   }
 
-
   public UUID getId() {
     return id;
   }

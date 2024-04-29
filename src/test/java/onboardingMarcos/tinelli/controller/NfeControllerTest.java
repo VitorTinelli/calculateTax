@@ -22,7 +22,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 @ExtendWith(MockitoExtension.class)
-public class NfeControllerTest {
+class NfeControllerTest {
 
   Nfe nfe;
   NfePostRequestBody nfePostRequestBody;
@@ -80,22 +80,24 @@ public class NfeControllerTest {
   @Test
   @DisplayName("findByNumber returns nfe when successful")
   void findByNumber_ReturnNfe_WhenSuccessful() {
-    when(nfeService.findByNumber(any(nfe.getNumber().getClass()))).thenReturn(nfe);
+    when(nfeService.findByNumberOrThrowBadRequestException(
+        any(nfe.getNumber().getClass()))).thenReturn(nfe);
 
     Assertions.assertEquals(nfeController.findByNumber(nfe.getNumber()).getBody(), nfe);
-    verify(nfeService).findByNumber(any(nfe.getNumber().getClass()));
+    verify(nfeService).findByNumberOrThrowBadRequestException(any(nfe.getNumber().getClass()));
     verifyNoMoreInteractions(nfeService);
   }
 
   @Test
   @DisplayName("Find by Number Throws Bad exception error when NFE not exist")
   void findByNumber_TrowsBadRequestException_WhenNfeNotExist() {
-    when(nfeService.findByNumber(any(nfe.getNumber().getClass()))).thenThrow(
+    when(nfeService.findByNumberOrThrowBadRequestException(
+        any(nfe.getNumber().getClass()))).thenThrow(
         new BadRequestException("Nfe not found"));
 
     Assertions.assertThrows(BadRequestException.class,
         () -> nfeController.findByNumber(nfe.getNumber()));
-    verify(nfeService).findByNumber(any(nfe.getNumber().getClass()));
+    verify(nfeService).findByNumberOrThrowBadRequestException(any(nfe.getNumber().getClass()));
     verifyNoMoreInteractions(nfeService);
   }
 
