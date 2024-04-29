@@ -11,6 +11,7 @@ import onboardingMarcos.tinelli.exceptions.BadRequestException;
 import onboardingMarcos.tinelli.repository.UsersRepository;
 import onboardingMarcos.tinelli.requests.UserPostRequestBody;
 import onboardingMarcos.tinelli.requests.UserPutRequestBody;
+import onboardingMarcos.tinelli.service.UserAuthoritiesService;
 import onboardingMarcos.tinelli.service.UserService;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -34,6 +35,8 @@ class UserServiceTest {
   @Mock
   private UsersRepository usersRepository;
 
+  @Mock
+  private UserAuthoritiesService usersAuthoritiesService;
 
   @BeforeEach
   void setUp() {
@@ -105,6 +108,8 @@ class UserServiceTest {
   void save_ReturnUser_WhenSuccessful() {
     when(usersRepository.save(any(Users.class))).thenReturn(user);
     when(usersRepository.findBycpf(userPostRequestBody.getCpf())).thenReturn(Optional.empty());
+    when(usersAuthoritiesService.findByAuthoritiesOrThrowBadRequestException(
+        userPostRequestBody.getUserType())).thenReturn(null);
     Users userSaved = userService.save(userPostRequestBody);
 
     Assertions.assertEquals(user, userSaved);
@@ -151,16 +156,6 @@ class UserServiceTest {
               () -> userService.save(userPostRequestBody));
         }
     );
-  }
-
-  @Test
-  @DisplayName("Save throws BadRequestException when UserType different of Contador or Gerente")
-  void save_ThrowBadRequestException_WhenUserTypeIsNotContadorOrGerente() {
-    when(usersRepository.findBycpf(userPostRequestBody.getCpf())).thenReturn(Optional.empty());
-    userPostRequestBody.setUserType("admin");
-
-    Assertions.assertThrows(BadRequestException.class, () -> userService.save(userPostRequestBody));
-    verify(usersRepository, never()).save(any(Users.class));
   }
 
   @Test

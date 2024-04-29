@@ -94,6 +94,37 @@ class NfeServiceTest {
   }
 
   @Test
+  @DisplayName("Find by date period returns a NFE list when successful")
+  void findByDatePeriod_ReturnListOfNfe_WhenSuccessful() {
+    when(nfeRepository.findByDateBetween(LocalDate.now(), LocalDate.now())).thenReturn(
+        List.of(nfe));
+    List<Nfe> savedNfe = nfeService.findByTimeGap(LocalDate.now(), LocalDate.now());
+
+    Assertions.assertEquals(savedNfe, List.of(nfe));
+    verify(nfeRepository).findByDateBetween(LocalDate.now(), LocalDate.now());
+  }
+
+  @Test
+  @DisplayName("Find by NFE number returns a NFE when successful")
+  void findByNfeNumber_ReturnNfe_WhenSuccessful() {
+    when(nfeRepository.findByNumber(nfe.getNumber())).thenReturn(Optional.of(nfe));
+    Nfe savedNfe = nfeService.findByNumberOrThrowBadRequestException(nfe.getNumber());
+
+    Assertions.assertEquals(savedNfe, nfe);
+    verify(nfeRepository).findByNumber(nfe.getNumber());
+  }
+
+  @Test
+  @DisplayName("Find by NFE number throws BadRequestException when no NFE found")
+  void findByNfeNumber_ThrowBadRequestException_WhenNfeNotFound() {
+    when(nfeRepository.findByNumber(nfe.getNumber())).thenReturn(Optional.empty());
+
+    Assertions.assertThrows(BadRequestException.class,
+        () -> nfeService.findByNumberOrThrowBadRequestException(nfe.getNumber()));
+    verify(nfeRepository).findByNumber(nfe.getNumber());
+  }
+
+  @Test
   @DisplayName("Save returns and save a NFE when successful")
   void save_ReturnNfe_WhenSuccessful() {
     when(nfeRepository.save(any(Nfe.class))).thenReturn(nfe);
@@ -101,6 +132,22 @@ class NfeServiceTest {
 
     Assertions.assertEquals(savedNfe, nfe);
     verify(nfeRepository).save(any(Nfe.class));
+  }
+
+  @Test
+  @DisplayName("Save throws BadRequestException when NFE number is already registered")
+  void save_ThrowBadRequestException_WhenNfeNumberAlreadyRegistered() {
+    Nfe nfe2 = new Nfe(
+        UUID.randomUUID(),
+        12345678911L,
+        LocalDate.now(),
+        198.00D
+    );
+    when(nfeRepository.findByNumber(nfePostRequestBody.getNumber())).thenReturn(Optional.of(nfe2));
+
+    Assertions.assertThrows(BadRequestException.class,
+        () -> nfeService.save(nfePostRequestBody));
+    verify(nfeRepository).findByNumber(nfePostRequestBody.getNumber());
   }
 
   @Test
@@ -170,5 +217,22 @@ class NfeServiceTest {
               () -> nfeService.replace(nfePutRequestBody));
         }
     );
+  }
+
+  @Test
+  @DisplayName("Replace throws BadRequestException when NFE number is already registered")
+  void replace_ThrowBadRequestException_WhenNewNfeNumberAlreadyRegistered() {
+    Nfe nfe2 = new Nfe(
+        UUID.randomUUID(),
+        12345678911L,
+        LocalDate.now(),
+        198.00D
+    );
+    when(nfeRepository.findById(nfePutRequestBody.getId())).thenReturn(Optional.of(nfe));
+    when(nfeRepository.findByNumber(nfePutRequestBody.getNumber())).thenReturn(Optional.of(nfe2));
+
+    Assertions.assertThrows(BadRequestException.class,
+        () -> nfeService.replace(nfePutRequestBody));
+    verify(nfeRepository).findByNumber(nfePutRequestBody.getNumber());
   }
 }

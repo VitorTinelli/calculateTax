@@ -21,10 +21,13 @@ import org.springframework.transaction.annotation.Transactional;
 public class UserService implements UserDetailsService {
 
   private final UsersRepository usersRepository;
+  private final UserAuthoritiesService userAuthoritiesService;
 
-  public UserService(final UsersRepository usersRepository) {
+  public UserService(final UsersRepository usersRepository,
+      final UserAuthoritiesService userAuthoritiesService) {
     this.usersRepository = usersRepository;
 
+    this.userAuthoritiesService = userAuthoritiesService;
   }
 
   public List<Users> listAll() {
@@ -48,6 +51,7 @@ public class UserService implements UserDetailsService {
       if (findByCPForReturnNull(user.getCpf()) != null) {
         throw new BadRequestException("CPF already registered");
       }
+      userAuthoritiesService.findByAuthoritiesOrThrowBadRequestException(user.getUserType());
       Verifications.verificationUserPOST(user);
       return usersRepository.save(
           new Users(

@@ -17,10 +17,6 @@ public class Verifications {
     if (user.getCpf().toString().length() != 11) {
       throw new BadRequestException("CPF don't have 11 digits");
     }
-    if (!Objects.equals(user.getUserType(), "contador") && !Objects.equals(user.getUserType(),
-        "gerente")) {
-      throw new BadRequestException("User type must be 'contador' or 'gerente'");
-    }
   }
 
   public static void verificationUserPUT(UserPutRequestBody user) {
@@ -85,5 +81,11 @@ public class Verifications {
       throw new BadRequestException("You have to inform the NFE ID");
     }
 
+  }
+
+  public static void verificationUserAuthoritiesPOST(String authorities) {
+    if (authorities.isBlank()) {
+      throw new BadRequestException("You have to fill all fields");
+    }
   }
 }

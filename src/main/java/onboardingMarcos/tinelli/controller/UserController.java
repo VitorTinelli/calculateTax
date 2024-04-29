@@ -46,5 +46,4 @@ public class UserController {
     userService.replace(userPutRequestBody);
     return ResponseEntity.noContent().build();
   }
-
 }

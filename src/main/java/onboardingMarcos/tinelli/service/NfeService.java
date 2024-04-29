@@ -42,16 +42,12 @@ public class NfeService {
             "NFe not Found, Please verify the provided Number"));
   }
 
-  public Nfe findByNumberOrReturnNull(Long number) {
-    return nfeRepository.findByNumber(number).orElse(null);
-  }
-
   @Transactional
   public Nfe save(NfePostRequestBody nfePostRequestBody) {
     try {
       Verifications.verificationNFEPOST(nfePostRequestBody);
-      if (findByNumberOrReturnNull(nfePostRequestBody.getNumber()) != null) {
-        throw new BadRequestException("NFe already exists, please verify the provided Number");
+      if (nfeRepository.findByNumber(nfePostRequestBody.getNumber()).isPresent()) {
+        throw new BadRequestException("NFe already registered, please verify the provided Number");
       }
       return nfeRepository.save(
           new Nfe(
@@ -79,9 +75,9 @@ public class NfeService {
     try {
       Verifications.verificationNFEPUT(nfePutRequestBody);
       Nfe savedNfe = findByIdOrThrowBadRequestException(nfePutRequestBody.getId());
-      if (findByNumberOrReturnNull(nfePutRequestBody.getNumber()) != null
+      if (nfeRepository.findByNumber(nfePutRequestBody.getNumber()).isPresent()
           && !Objects.equals(savedNfe.getNumber(), nfePutRequestBody.getNumber())) {
-        throw new BadRequestException("NFe already exists, please verify the provided Number");
+        throw new BadRequestException("NFe already registered, please verify the provided Number");
       }
       nfeRepository.save(
           new Nfe(
