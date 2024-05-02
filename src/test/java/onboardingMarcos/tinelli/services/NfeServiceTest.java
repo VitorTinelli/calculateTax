@@ -144,7 +144,6 @@ class NfeServiceTest {
         198.00D
     );
     when(nfeRepository.findByNumber(nfePostRequestBody.getNumber())).thenReturn(Optional.of(nfe2));
-
     Assertions.assertThrows(BadRequestException.class,
         () -> nfeService.save(nfePostRequestBody));
     verify(nfeRepository).findByNumber(nfePostRequestBody.getNumber());

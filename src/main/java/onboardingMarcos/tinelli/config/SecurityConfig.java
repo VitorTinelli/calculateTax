@@ -24,8 +24,8 @@ public class SecurityConfig {
   public SecurityFilterChain filterChain(HttpSecurity httpSecurity) throws Exception {
     return httpSecurity.csrf().disable()
         .authorizeRequests(
-            auth -> auth.antMatchers("/taxedNfe/post**/**").hasAuthority("gerente")
-                .antMatchers("/taxedNfe/delete**/**").hasAuthority("gerente").anyRequest()
+            auth -> auth.antMatchers("/taxCalculation/post**/**").hasAuthority("gerente")
+                .antMatchers("/taxCalculation/delete**/**").hasAuthority("gerente").anyRequest()
                 .authenticated()).httpBasic(Customizer.withDefaults())
         .userDetailsService(userDetailsService).formLogin(Customizer.withDefaults()).build();
   }
