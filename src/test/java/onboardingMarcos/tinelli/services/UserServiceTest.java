@@ -70,7 +70,7 @@ class UserServiceTest {
     when(usersRepository.findAll()).thenReturn(List.of(user));
     List<Users> users = userService.listAll();
 
-    Assertions.assertTrue(userService.listAll().contains(user));
+    Assertions.assertTrue(users.contains(user));
   }
 
   @Test
@@ -262,6 +262,4 @@ class UserServiceTest {
         () -> userService.replace(userPutRequestBody));
     verify(usersRepository, never()).save(any(Users.class));
   }
-
-
 }

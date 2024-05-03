@@ -52,7 +52,6 @@ class TaxesServiceTest {
         "ISS",
         3.0D
     );
-
   }
 
   @Test

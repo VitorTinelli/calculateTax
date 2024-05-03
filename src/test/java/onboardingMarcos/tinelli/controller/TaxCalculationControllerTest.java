@@ -43,9 +43,21 @@ class TaxCalculationControllerTest {
   @Test
   @DisplayName("List all return all calculated months")
   void listAll_returnAllCalculatedMonths_WhenSuccessful() {
-    when(taxCalculationService.ListAll()).thenReturn(List.of(taxCalculation));
-    Assertions.assertEquals(taxCalculationController.ListAll().getBody(), List.of(taxCalculation));
-    verify(taxCalculationService).ListAll();
+    when(taxCalculationService.listAll()).thenReturn(List.of(taxCalculation));
+    Assertions.assertEquals(taxCalculationController.listAll().getBody(), List.of(taxCalculation));
+    verify(taxCalculationService).listAll();
+    verifyNoMoreInteractions(taxCalculationService);
+  }
+
+  @Test
+  @DisplayName("Find by month return the calculated tax for the month")
+  void findByMonth_returnCalculatedTaxForTheMonth_WhenSuccessful() {
+    when(taxCalculationService.findByMonth(dateRequestBody.getDate())).thenReturn(
+        List.of(taxCalculation));
+    Assertions.assertEquals(
+        taxCalculationController.findByMonth(dateRequestBody).getBody(),
+        List.of(taxCalculation));
+    verify(taxCalculationService).findByMonth(dateRequestBody.getDate());
     verifyNoMoreInteractions(taxCalculationService);
   }
 
@@ -84,6 +96,22 @@ class TaxCalculationControllerTest {
         new BadRequestException("Already calculated for this period."));
     Assertions.assertThrows(BadRequestException.class,
         () -> taxCalculationController.postByDatePeriod(dateRequestBody));
+  }
+
+  @Test
+  @DisplayName("Delete by id deletes a tax calculation when successful")
+  void deleteById_deletesTaxCalculation_WhenSuccessful() {
+    doNothing().when(taxCalculationService).deleteById(id);
+    Assertions.assertDoesNotThrow(() -> taxCalculationController.deleteById(id));
+    verify(taxCalculationService).deleteById(id);
+  }
+
+  @Test
+  @DisplayName("Delete all by month deletes all tax calculations for the month when successful")
+  void deleteAllByMonth_deletesAllTaxCalculationsForTheMonth_WhenSuccessful() {
+    doNothing().when(taxCalculationService).deleteAllByMonth(dateRequestBody.getDate());
+    Assertions.assertDoesNotThrow(() -> taxCalculationController.deleteAllByMonth(dateRequestBody));
+    verify(taxCalculationService).deleteAllByMonth(dateRequestBody.getDate());
   }
 
 

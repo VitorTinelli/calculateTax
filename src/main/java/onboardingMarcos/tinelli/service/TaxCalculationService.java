@@ -6,7 +6,6 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
-import lombok.extern.log4j.Log4j2;
 import onboardingMarcos.tinelli.controller.SelicController;
 import onboardingMarcos.tinelli.domain.Nfe;
 import onboardingMarcos.tinelli.domain.TaxCalculation;
@@ -16,7 +15,6 @@ import onboardingMarcos.tinelli.repository.TaxCalculationRepository;
 import onboardingMarcos.tinelli.util.FirstAndLastDayOfMonth;
 import org.springframework.stereotype.Service;
 
-@Log4j2
 @Service
 public class TaxCalculationService {
 
@@ -34,7 +32,7 @@ public class TaxCalculationService {
     this.taxesService = taxesService;
   }
 
-  public List<TaxCalculation> ListAll() {
+  public List<TaxCalculation> listAll() {
     return taxCalculationRepository.findAll();
   }
 
@@ -42,6 +40,16 @@ public class TaxCalculationService {
     return taxCalculationRepository.findById(id)
         .orElseThrow(
             () -> new BadRequestException("Tax not found, please verify the provided ID."));
+  }
+
+  public List<TaxCalculation> findByMonth(LocalDate date) {
+    List<TaxCalculation> list =
+        taxCalculationRepository.findByCalculationDate(FirstAndLastDayOfMonth.firstDay(date));
+    if (list.isEmpty()) {
+      throw new BadRequestException("No taxes calculated for this month.");
+    } else {
+      return list;
+    }
   }
 
   public List<TaxCalculation> postByDatePeriod(LocalDate dateRequestBody) {
@@ -81,5 +89,9 @@ public class TaxCalculationService {
 
   public void deleteById(UUID id) {
     taxCalculationRepository.delete(findByIdOrThrowBadExceptionError(id));
+  }
+
+  public void deleteAllByMonth(LocalDate date) {
+    taxCalculationRepository.deleteAll(findByMonth(date));
   }
 }

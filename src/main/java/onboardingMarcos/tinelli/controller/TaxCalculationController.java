@@ -19,8 +19,14 @@ public class TaxCalculationController {
   }
 
   @GetMapping("")
-  public ResponseEntity<List<TaxCalculation>> ListAll() {
-    return ResponseEntity.ok(taxCalculationService.ListAll());
+  public ResponseEntity<List<TaxCalculation>> listAll() {
+    return ResponseEntity.ok(taxCalculationService.listAll());
+  }
+
+  @GetMapping("/find/month")
+  public ResponseEntity<List<TaxCalculation>> findByMonth(
+      @RequestBody DateRequestBody dateRequestBody) {
+    return ResponseEntity.ok(taxCalculationService.findByMonth(dateRequestBody.getDate()));
   }
 
   @PostMapping("/post")
@@ -32,6 +38,12 @@ public class TaxCalculationController {
   @DeleteMapping("/delete/{id}")
   public ResponseEntity<Void> deleteById(@PathVariable UUID id) {
     taxCalculationService.deleteById(id);
+    return ResponseEntity.noContent().build();
+  }
+
+  @DeleteMapping("/delete-all/month")
+  public ResponseEntity<Void> deleteAllByMonth(@RequestBody DateRequestBody dateRequestBody) {
+    taxCalculationService.deleteAllByMonth(dateRequestBody.getDate());
     return ResponseEntity.noContent().build();
   }
 }

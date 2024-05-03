@@ -12,7 +12,7 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 
 @DataJpaTest
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
-public class UsersRepositoryTest {
+class UsersRepositoryTest {
 
   Users user;
   UUID id;
