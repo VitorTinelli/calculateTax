@@ -20,7 +20,6 @@ public class UserPutRequestBody {
   }
 
   public UserPutRequestBody() {
-
   }
 
   public UUID getId() {

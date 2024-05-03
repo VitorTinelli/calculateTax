@@ -5,13 +5,13 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
-import onboardingMarcos.tinelli.controller.SelicController;
 import onboardingMarcos.tinelli.domain.TaxCalculation;
 import onboardingMarcos.tinelli.domain.Taxes;
 import onboardingMarcos.tinelli.exceptions.BadRequestException;
 import onboardingMarcos.tinelli.repository.TaxCalculationRepository;
 import onboardingMarcos.tinelli.requests.DateRequestBody;
 import onboardingMarcos.tinelli.service.NfeService;
+import onboardingMarcos.tinelli.service.SelicService;
 import onboardingMarcos.tinelli.service.TaxCalculationService;
 import onboardingMarcos.tinelli.service.TaxesService;
 import org.junit.jupiter.api.Assertions;
@@ -44,7 +44,7 @@ class TaxCalculationServiceTest {
   private TaxesService taxesService;
 
   @Mock
-  private SelicController selicController;
+  private SelicService selicService;
 
   @BeforeEach
   void setUp() {
@@ -106,7 +106,7 @@ class TaxCalculationServiceTest {
         List.of());
     when(taxesService.listAll()).thenReturn(List.of(taxes));
     when(taxCalculationRepository.save(any(TaxCalculation.class))).thenReturn(taxCalculation);
-    when(selicController.getSelicPerMonth()).thenReturn(0.01D);
+    when(selicService.getSelicPerMonth()).thenReturn(0.01D);
     Assertions.assertEquals(List.of(taxCalculation),
         taxCalculationService.postByDatePeriod(dateRequestBody.getDate()));
   }
@@ -120,7 +120,7 @@ class TaxCalculationServiceTest {
     when(taxCalculationRepository.findByCalculationDate(any(LocalDate.class))).thenReturn(
         List.of(taxCalculation));
     when(taxCalculationRepository.save(any(TaxCalculation.class))).thenReturn(taxCalculation);
-    when(selicController.getSelicPerMonth()).thenReturn(0.01D);
+    when(selicService.getSelicPerMonth()).thenReturn(0.01D);
     Assertions.assertEquals(List.of(taxCalculation),
         taxCalculationService.postByDatePeriod(dateRequestBody.getDate()));
   }

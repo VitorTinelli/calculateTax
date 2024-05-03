@@ -1,32 +1,32 @@
 package onboardingMarcos.tinelli.service;
 
 
+import static java.time.temporal.TemporalAdjusters.firstDayOfMonth;
+import static java.time.temporal.TemporalAdjusters.lastDayOfMonth;
 import java.text.DecimalFormat;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
-import onboardingMarcos.tinelli.controller.SelicController;
 import onboardingMarcos.tinelli.domain.Nfe;
 import onboardingMarcos.tinelli.domain.TaxCalculation;
 import onboardingMarcos.tinelli.domain.Taxes;
 import onboardingMarcos.tinelli.exceptions.BadRequestException;
 import onboardingMarcos.tinelli.repository.TaxCalculationRepository;
-import onboardingMarcos.tinelli.util.FirstAndLastDayOfMonth;
 import org.springframework.stereotype.Service;
 
 @Service
 public class TaxCalculationService {
 
-  private final SelicController selicController;
+  private final SelicService selicService;
   private final TaxCalculationRepository taxCalculationRepository;
   private final NfeService nfeService;
   private final TaxesService taxesService;
 
-  public TaxCalculationService(final SelicController selicController,
+  public TaxCalculationService(final SelicService selicService,
       final TaxCalculationRepository taxCalculationRepository,
       final NfeService nfeService, final TaxesService taxesService) {
-    this.selicController = selicController;
+    this.selicService = selicService;
     this.taxCalculationRepository = taxCalculationRepository;
     this.nfeService = nfeService;
     this.taxesService = taxesService;
@@ -44,7 +44,7 @@ public class TaxCalculationService {
 
   public List<TaxCalculation> findByMonth(LocalDate date) {
     List<TaxCalculation> list =
-        taxCalculationRepository.findByCalculationDate(FirstAndLastDayOfMonth.firstDay(date));
+        taxCalculationRepository.findByCalculationDate(date.with(firstDayOfMonth()));
     if (list.isEmpty()) {
       throw new BadRequestException("No taxes calculated for this month.");
     } else {
@@ -57,9 +57,9 @@ public class TaxCalculationService {
     List<TaxCalculation> newTaxedValues = new ArrayList<>();
     List<Taxes> taxesList = taxesService.listAll();
     List<TaxCalculation> savedTaxes = taxCalculationRepository.findByCalculationDate(
-        FirstAndLastDayOfMonth.firstDay(dateRequestBody));
-    List<Nfe> nfeList = nfeService.findByTimeGap(FirstAndLastDayOfMonth.firstDay(dateRequestBody),
-        FirstAndLastDayOfMonth.lastDay(dateRequestBody));
+        dateRequestBody.with(firstDayOfMonth()));
+    List<Nfe> nfeList = nfeService.findByTimeGap(dateRequestBody.with(firstDayOfMonth()),
+        dateRequestBody.with((lastDayOfMonth())));
     totalValue = nfeList.stream().mapToDouble(Nfe::getValue).sum();
 
     if (savedTaxes.isEmpty()) {
@@ -77,14 +77,13 @@ public class TaxCalculationService {
   }
 
   private TaxCalculation calculateTaxAndSave(Taxes tax, double totalValue, LocalDate date) {
-    double difference =
-        totalValue * ((tax.getAliquot() + selicController.getSelicPerMonth()) / 100);
-    Double taxedValue = totalValue + difference;
+    double taxedValue =
+        totalValue * ((tax.getAliquot() + selicService.getSelicPerMonth()) / 100);
     DecimalFormat formatter = new DecimalFormat("0.00");
     taxedValue = Double.parseDouble(formatter.format(taxedValue));
     return taxCalculationRepository.save(
         new TaxCalculation(UUID.randomUUID(), totalValue, taxedValue,
-            FirstAndLastDayOfMonth.firstDay(date), tax));
+            date.with(firstDayOfMonth()), tax));
   }
 
   public void deleteById(UUID id) {
