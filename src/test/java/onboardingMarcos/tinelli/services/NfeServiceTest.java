@@ -172,7 +172,7 @@ class NfeServiceTest {
   void delete_DeletesNfe_WhenSuccessful() {
     when(nfeRepository.findById(nfe.getId())).thenReturn(Optional.of(nfe));
     Assertions.assertDoesNotThrow(() -> nfeService.delete(nfe.getId()));
-    verify(nfeRepository).deleteById(nfe.getId());
+    verify(nfeRepository).delete(nfe);
   }
 
   @Test

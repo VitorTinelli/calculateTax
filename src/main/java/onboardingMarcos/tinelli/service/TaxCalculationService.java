@@ -3,6 +3,8 @@ package onboardingMarcos.tinelli.service;
 
 import static java.time.temporal.TemporalAdjusters.firstDayOfMonth;
 import static java.time.temporal.TemporalAdjusters.lastDayOfMonth;
+import static java.util.stream.Collectors.toList;
+import java.math.BigDecimal;
 import java.text.DecimalFormat;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -18,6 +20,7 @@ import org.springframework.stereotype.Service;
 @Service
 public class TaxCalculationService {
 
+  private final DecimalFormat formatter = new DecimalFormat("0.00");
   private final SelicService selicService;
   private final TaxCalculationRepository taxCalculationRepository;
   private final NfeService nfeService;
@@ -33,7 +36,11 @@ public class TaxCalculationService {
   }
 
   public List<TaxCalculation> listAll() {
-    return taxCalculationRepository.findAll();
+    return taxCalculationRepository.findAll().stream().map(tax -> {
+      tax.setTaxedValue(new BigDecimal(formatter.format(tax.getTaxedValue())));
+      tax.setNfeValue(new BigDecimal(formatter.format(tax.getNfeValue())));
+      return tax;
+    }).collect(toList());
   }
 
   public TaxCalculation findByIdOrThrowBadExceptionError(UUID id) {
@@ -53,36 +60,36 @@ public class TaxCalculationService {
   }
 
   public List<TaxCalculation> postByDatePeriod(LocalDate dateRequestBody) {
-    double totalValue;
     List<TaxCalculation> newTaxedValues = new ArrayList<>();
     List<Taxes> taxesList = taxesService.listAll();
     List<TaxCalculation> savedTaxes = taxCalculationRepository.findByCalculationDate(
         dateRequestBody.with(firstDayOfMonth()));
     List<Nfe> nfeList = nfeService.findByTimeGap(dateRequestBody.with(firstDayOfMonth()),
         dateRequestBody.with((lastDayOfMonth())));
-    totalValue = nfeList.stream().mapToDouble(Nfe::getValue).sum();
+    Double nfeValue = nfeList.stream().mapToDouble(Nfe::getValue).sum();
 
     if (savedTaxes.isEmpty()) {
       taxesList.forEach(
-          tax -> newTaxedValues.add(calculateTaxAndSave(tax, totalValue, dateRequestBody)));
+          tax -> newTaxedValues.add(
+              calculateTaxAndSave(tax, nfeValue, dateRequestBody)));
     } else if (savedTaxes.size() != taxesList.size()
-        || savedTaxes.get(0).getTotalValue() != totalValue) {
+        || savedTaxes.get(0).getNfeValue().compareTo(BigDecimal.valueOf(nfeValue)) != 0) {
       taxCalculationRepository.deleteAll(savedTaxes);
       taxesList.forEach(
-          tax -> newTaxedValues.add(calculateTaxAndSave(tax, totalValue, dateRequestBody)));
+          tax -> newTaxedValues.add(
+              calculateTaxAndSave(tax, nfeValue, dateRequestBody)));
     } else {
       throw new BadRequestException("Already calculated for this period.");
     }
     return newTaxedValues;
   }
 
-  private TaxCalculation calculateTaxAndSave(Taxes tax, double totalValue, LocalDate date) {
-    double taxedValue =
-        totalValue * ((tax.getAliquot() + selicService.getSelicPerMonth()) / 100);
-    DecimalFormat formatter = new DecimalFormat("0.00");
-    taxedValue = Double.parseDouble(formatter.format(taxedValue));
+  private TaxCalculation calculateTaxAndSave(Taxes tax, Double nfeValue, LocalDate date) {
+    Double taxedValue = nfeValue * ((tax.getAliquot() + selicService.getSelicPerMonth()) / 100);
     return taxCalculationRepository.save(
-        new TaxCalculation(UUID.randomUUID(), totalValue, taxedValue,
+        new TaxCalculation(UUID.randomUUID(),
+            BigDecimal.valueOf(Double.parseDouble(formatter.format(nfeValue))),
+            BigDecimal.valueOf(Double.parseDouble(formatter.format(taxedValue))),
             date.with(firstDayOfMonth()), tax));
   }
 

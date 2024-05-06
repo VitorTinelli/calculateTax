@@ -3,6 +3,7 @@ package onboardingMarcos.tinelli.domain;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.UUID;
 
@@ -11,23 +12,22 @@ public class TaxCalculation {
 
   @Id
   private UUID id;
-  private Double totalValue;
-  private Double totalTaxedValue;
+  private BigDecimal nfeValue;
+  private BigDecimal taxedValue;
   private LocalDate calculationDate;
   @ManyToOne
   private Taxes tax;
 
-  public TaxCalculation(UUID id, Double totalValue, Double totalTaxedValue,
-      LocalDate calculationDate,
-      Taxes tax) {
-    this.id = id;
-    this.totalValue = totalValue;
-    this.totalTaxedValue = totalTaxedValue;
-    this.calculationDate = calculationDate;
-    this.tax = tax;
+  public TaxCalculation() {
   }
 
-  public TaxCalculation() {
+  public TaxCalculation(UUID id, BigDecimal nfeValue, BigDecimal taxedValue,
+      LocalDate calculationDate, Taxes tax) {
+    this.id = id;
+    this.nfeValue = nfeValue;
+    this.taxedValue = taxedValue;
+    this.calculationDate = calculationDate;
+    this.tax = tax;
   }
 
   public UUID getId() {
@@ -38,20 +38,20 @@ public class TaxCalculation {
     this.id = id;
   }
 
-  public Double getTotalValue() {
-    return totalValue;
+  public BigDecimal getNfeValue() {
+    return nfeValue;
   }
 
-  public void setTotalValue(Double totalValue) {
-    this.totalValue = totalValue;
+  public void setNfeValue(BigDecimal nfeValue) {
+    this.nfeValue = nfeValue;
   }
 
-  public Double getTotalTaxedValue() {
-    return totalTaxedValue;
+  public BigDecimal getTaxedValue() {
+    return taxedValue;
   }
 
-  public void setTotalTaxedValue(Double totalTaxedValue) {
-    this.totalTaxedValue = totalTaxedValue;
+  public void setTaxedValue(BigDecimal taxedValue) {
+    this.taxedValue = taxedValue;
   }
 
   public LocalDate getCalculationDate() {

@@ -6,6 +6,7 @@ import java.util.UUID;
 import onboardingMarcos.tinelli.domain.Users;
 import onboardingMarcos.tinelli.exceptions.BadRequestException;
 import onboardingMarcos.tinelli.repository.UsersRepository;
+import onboardingMarcos.tinelli.requests.UserAuthoritiesRequestBody;
 import onboardingMarcos.tinelli.requests.UserPostRequestBody;
 import onboardingMarcos.tinelli.requests.UserPutRequestBody;
 import onboardingMarcos.tinelli.util.Verifications;
@@ -40,6 +41,10 @@ public class UserService implements UserDetailsService {
             "User not Found, Please verify the provided ID"));
   }
 
+  public List<Users> findByAuthorities(String authorities) {
+    return usersRepository.findByAuthorities(authorities);
+  }
+
   public Users findByCPForReturnNull(Long cpf) {
     return usersRepository.findBycpf(cpf)
         .orElse(null);
@@ -70,9 +75,9 @@ public class UserService implements UserDetailsService {
   }
 
   public void delete(UUID id) {
-    findByIdOrThrowBadRequestException(id);
+
     try {
-      usersRepository.deleteById(id);
+      usersRepository.delete(findByIdOrThrowBadRequestException(id));
     } catch (Exception exception) {
       throw new BadRequestException("User not found, please verify the provided ID");
     }
@@ -106,5 +111,35 @@ public class UserService implements UserDetailsService {
   public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
     return Optional.ofNullable(usersRepository.findByUsername(username))
         .orElseThrow(() -> new UsernameNotFoundException("User not found"));
+  }
+
+  public List<Users> replaceUsersAuthorities(
+      UserAuthoritiesRequestBody userAuthoritiesRequestBody) {
+    try {
+      userAuthoritiesService.findByAuthoritiesOrThrowBadRequestException(
+          userAuthoritiesRequestBody.getNewAuthorities());
+    } catch (BadRequestException exception) {
+      throw new BadRequestException("New Authorities not exist, please create it first");
+    }
+    try {
+      List<Users> savedUsers = findByAuthorities(userAuthoritiesRequestBody.getActualAuthorities());
+      if (savedUsers.isEmpty()) {
+        throw new BadRequestException("No user with this authority");
+      } else {
+        savedUsers.forEach(user ->
+            usersRepository.save(
+                new Users(
+                    user.getId(),
+                    user.getName(),
+                    user.getCpf(),
+                    user.getUsername(),
+                    user.getPassword(),
+                    userAuthoritiesRequestBody.getNewAuthorities().toLowerCase())));
+      }
+      return findByAuthorities(userAuthoritiesRequestBody.getNewAuthorities());
+    } catch (Exception exception) {
+      throw new BadRequestException(
+          exception.getMessage());
+    }
   }
 }

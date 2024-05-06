@@ -1,6 +1,7 @@
 package onboardingMarcos.tinelli.controller;
 
 import static org.mockito.Mockito.*;
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.UUID;
@@ -36,14 +37,16 @@ class TaxCalculationControllerTest {
   void setUp() {
     id = UUID.randomUUID();
     taxes = new Taxes(id, "ISS", 10);
-    taxCalculation = new TaxCalculation(id, 1000D, 100D, LocalDate.now(), taxes);
+    taxCalculation = new TaxCalculation(id, BigDecimal.valueOf(400D), BigDecimal.valueOf(123.50D),
+        LocalDate.now(), taxes);
     dateRequestBody = new DateRequestBody(LocalDate.now());
   }
 
   @Test
   @DisplayName("List all return all calculated months")
   void listAll_returnAllCalculatedMonths_WhenSuccessful() {
-    when(taxCalculationService.listAll()).thenReturn(List.of(taxCalculation));
+    when(taxCalculationService.listAll()).thenReturn(
+        List.of(taxCalculation));
     Assertions.assertEquals(taxCalculationController.listAll().getBody(), List.of(taxCalculation));
     verify(taxCalculationService).listAll();
     verifyNoMoreInteractions(taxCalculationService);
@@ -81,7 +84,7 @@ class TaxCalculationControllerTest {
     Assertions.assertEquals(
         taxCalculationController.postByDatePeriod(dateRequestBody).getBody(),
         List.of(taxCalculation));
-    taxCalculation.setTotalTaxedValue(200D);
+    taxCalculation.setTaxedValue(BigDecimal.valueOf(3000D));
     when(taxCalculationService.postByDatePeriod(LocalDate.now())).thenReturn(
         List.of(taxCalculation));
     Assertions.assertEquals(

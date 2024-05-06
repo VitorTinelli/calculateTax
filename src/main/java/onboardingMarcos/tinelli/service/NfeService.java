@@ -63,9 +63,8 @@ public class NfeService {
   }
 
   public void delete(UUID uuid) {
-    findByIdOrThrowBadRequestException(uuid);
     try {
-      nfeRepository.deleteById(uuid);
+      nfeRepository.delete(findByIdOrThrowBadRequestException(uuid));
     } catch (Exception e) {
       throw new BadRequestException("NFe not found, please verify the provided ID");
     }

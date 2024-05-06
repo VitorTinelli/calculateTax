@@ -66,4 +66,23 @@ class UsersTest {
         )
     );
   }
+
+  @Test
+  @DisplayName("Test all implemented methods")
+  void testImplementedMethods() {
+    Assertions.assertAll(
+        () -> {
+          users.isAccountNonExpired();
+        },
+        () -> {
+          users.isEnabled();
+        },
+        () -> {
+          users.isAccountNonLocked();
+        },
+        () -> {
+          users.isCredentialsNonExpired();
+        }
+    );
+  }
 }

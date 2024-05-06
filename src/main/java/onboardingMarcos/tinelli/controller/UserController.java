@@ -4,6 +4,7 @@ package onboardingMarcos.tinelli.controller;
 import java.util.List;
 import java.util.UUID;
 import onboardingMarcos.tinelli.domain.Users;
+import onboardingMarcos.tinelli.requests.UserAuthoritiesRequestBody;
 import onboardingMarcos.tinelli.requests.UserPostRequestBody;
 import onboardingMarcos.tinelli.requests.UserPutRequestBody;
 import onboardingMarcos.tinelli.service.UserService;
@@ -45,5 +46,11 @@ public class UserController {
   public ResponseEntity<Void> replace(@RequestBody UserPutRequestBody userPutRequestBody) {
     userService.replace(userPutRequestBody);
     return ResponseEntity.noContent().build();
+  }
+
+  @PutMapping("authorities")
+  public ResponseEntity<List<Users>> replaceAuthorities(
+      @RequestBody UserAuthoritiesRequestBody userAuthoritiesRequestBody) {
+    return ResponseEntity.ok(userService.replaceUsersAuthorities(userAuthoritiesRequestBody));
   }
 }

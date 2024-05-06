@@ -1,6 +1,7 @@
 package onboardingMarcos.tinelli.repository;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.UUID;
@@ -27,7 +28,8 @@ class TaxCalculationRepositoryTest {
   @BeforeEach
   void setUp() {
     id = UUID.randomUUID();
-    taxCalculation = new TaxCalculation(id, 1000D, 100D, LocalDate.now(), taxes);
+    taxCalculation = new TaxCalculation(id, BigDecimal.valueOf(1000D), BigDecimal.valueOf(500D),
+        LocalDate.now(), taxes);
   }
 
   @Test

@@ -114,7 +114,7 @@ class TaxesServiceTest {
   void delete_DeletesTaxes_WhenSuccessful() {
     when(taxesRepository.findById(tax.getId())).thenReturn(Optional.of(tax));
     Assertions.assertDoesNotThrow(() -> taxesService.delete(tax.getId()));
-    verify(taxesRepository).deleteById(tax.getId());
+    verify(taxesRepository).delete(tax);
   }
 
   @Test

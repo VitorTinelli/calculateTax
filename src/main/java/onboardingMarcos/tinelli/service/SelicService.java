@@ -11,6 +11,6 @@ public class SelicService {
     RestTemplate restTemplate = new RestTemplate();
     SelicDTO resp = restTemplate.getForObject(
         "https://brasilapi.com.br/api/taxas/v1/SELIC", SelicDTO.class);
-    return Double.parseDouble(resp.getValor());
+    return Double.parseDouble(resp.getValor()) / 12;
   }
 }

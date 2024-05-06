@@ -24,6 +24,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 @ExtendWith(MockitoExtension.class)
 class UserAuthoritiesServiceTest {
+
   Users user;
   UserAuthorities userAuthorities;
 
@@ -56,6 +57,18 @@ class UserAuthoritiesServiceTest {
 
     Assertions.assertTrue(userAuthoritiesService.listAll().contains(userAuthorities));
     verify(userAuthoritiesRepository).findAll();
+  }
+
+  @Test
+  @DisplayName("Find by userAuthorities throws BadRequest exception when user authorities not found")
+  void findByUserAuthorities_ThrowsBadRequestException_WhenUserAuthoritiesNotFound() {
+    when(userAuthoritiesRepository.findById(userAuthorities.getAuthorities())).thenReturn(
+        Optional.empty());
+
+    Assertions.assertThrows(
+        BadRequestException.class,
+        () -> userAuthoritiesService.findByAuthoritiesOrThrowBadRequestException(
+            userAuthorities.getAuthorities()));
   }
 
   @Test
@@ -93,7 +106,7 @@ class UserAuthoritiesServiceTest {
   @DisplayName("Delete throw BadRequest exception when user authorities is being used by a user")
   void delete_ThrowsBadRequestException_WhenUserAuthoritiesIsBeingUsedByAUser() {
     when(usersRepository.findByAuthorities(userAuthorities.getAuthorities())).thenReturn(
-        Optional.of(user));
+        List.of(user));
 
     Assertions.assertThrows(
         BadRequestException.class,

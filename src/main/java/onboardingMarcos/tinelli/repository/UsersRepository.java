@@ -1,5 +1,6 @@
 package onboardingMarcos.tinelli.repository;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 import onboardingMarcos.tinelli.domain.Users;
@@ -11,5 +12,5 @@ public interface UsersRepository extends JpaRepository<Users, UUID> {
   Optional<Users> findBycpf(Long cpf);
   UserDetails findByUsername(String username);
 
-  Optional<Users> findByAuthorities(String authorities);
+  List<Users> findByAuthorities(String authorities);
 }

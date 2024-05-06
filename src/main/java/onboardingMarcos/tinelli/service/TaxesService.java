@@ -48,9 +48,8 @@ public class TaxesService {
   }
 
   public void delete(UUID id) {
-    findByIdOrThrowBadRequestException(id);
     try {
-      taxesRepository.deleteById(id);
+      taxesRepository.delete(findByIdOrThrowBadRequestException(id));
     } catch (Exception exception) {
       throw new BadRequestException("Taxes not found, please verify the provided ID");
     }

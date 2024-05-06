@@ -42,13 +42,12 @@ public class UserAuthoritiesService {
   }
 
   public void delete(String authorities) {
-    usersRepository.findByAuthorities(authorities)
-        .ifPresent(user -> {
-          throw new BadRequestException(
-              "User Authorities is being used by a User, please change the user authorities first");
-        });
-    userAuthoritiesRepository.delete(findByAuthoritiesOrThrowBadRequestException(authorities));
+    if (usersRepository.findByAuthorities(authorities).isEmpty()) {
+      userAuthoritiesRepository.delete(findByAuthoritiesOrThrowBadRequestException(authorities));
+    } else {
+      throw new BadRequestException(
+          "User Authorities is being used by a user, please remove the user first");
+
+    }
   }
-
-
 }

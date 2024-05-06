@@ -9,6 +9,7 @@ import java.util.UUID;
 import onboardingMarcos.tinelli.domain.Users;
 import onboardingMarcos.tinelli.exceptions.BadRequestException;
 import onboardingMarcos.tinelli.repository.UsersRepository;
+import onboardingMarcos.tinelli.requests.UserAuthoritiesRequestBody;
 import onboardingMarcos.tinelli.requests.UserPostRequestBody;
 import onboardingMarcos.tinelli.requests.UserPutRequestBody;
 import onboardingMarcos.tinelli.service.UserAuthoritiesService;
@@ -21,6 +22,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
 @ExtendWith(MockitoExtension.class)
 class UserServiceTest {
@@ -28,6 +30,7 @@ class UserServiceTest {
   Users user;
   UserPostRequestBody userPostRequestBody;
   UserPutRequestBody userPutRequestBody;
+  UserAuthoritiesRequestBody userAuthoritiesRequestBody;
 
   @InjectMocks
   private UserService userService;
@@ -49,6 +52,7 @@ class UserServiceTest {
         "123456",
         "contador"
     );
+    userAuthoritiesRequestBody = new UserAuthoritiesRequestBody("gerente", "contador");
     userPostRequestBody = new UserPostRequestBody(
         "Marcos",
         12345678910L,
@@ -101,6 +105,16 @@ class UserServiceTest {
     Assertions.assertThrows(BadRequestException.class,
         () -> userService.findByIdOrThrowBadRequestException(user.getId()));
     verify(usersRepository).findById(user.getId());
+  }
+
+  @Test
+  @DisplayName("Find by authorities returns a list of USERS when successful")
+  void findByAuthorities_ReturnUsers_WhenSuccessful() {
+    when(usersRepository.findByAuthorities("gerente")).thenReturn(List.of(user));
+    List<Users> users = userService.findByAuthorities("gerente");
+
+    Assertions.assertTrue(users.contains(user));
+    verify(usersRepository).findByAuthorities("gerente");
   }
 
   @Test
@@ -173,7 +187,7 @@ class UserServiceTest {
     when(usersRepository.findById(user.getId())).thenReturn(Optional.of(user));
 
     Assertions.assertDoesNotThrow(() -> userService.delete(user.getId()));
-    verify(usersRepository).deleteById(user.getId());
+    verify(usersRepository).delete(user);
   }
 
   @Test
@@ -260,6 +274,59 @@ class UserServiceTest {
 
     Assertions.assertThrows(BadRequestException.class,
         () -> userService.replace(userPutRequestBody));
+    verify(usersRepository, never()).save(any(Users.class));
+  }
+
+  @Test
+  @DisplayName("Load by username returns a USER when successful")
+  void loadUserByUsername_ReturnUser_WhenSuccessful() {
+    when(usersRepository.findByUsername(user.getUsername())).thenReturn(user);
+
+    Assertions.assertEquals(user, userService.loadUserByUsername(user.getUsername()));
+    verify(usersRepository).findByUsername(user.getUsername());
+  }
+
+  @Test
+  @DisplayName("Load by username throws UsernameNotFoundException when NO USER found")
+  void loadUserByUsername_ThrowUsernameNotFoundException_WhenUserNotFound() {
+    when(usersRepository.findByUsername(user.getUsername())).thenReturn(null);
+
+    Assertions.assertThrows(UsernameNotFoundException.class,
+        () -> userService.loadUserByUsername(user.getUsername()));
+    verify(usersRepository).findByUsername(user.getUsername());
+  }
+
+  @Test
+  @DisplayName("Replace users authorities replaces all USERS authorities when successful")
+  void replaceUsersAuthorities_ReplaceUserAuthorities_WhenSuccessful() {
+    when(usersAuthoritiesService.findByAuthoritiesOrThrowBadRequestException(
+        any(String.class))).thenReturn(null);
+    when(usersRepository.findByAuthorities(any()))
+        .thenReturn(List.of(user));
+
+    Assertions.assertDoesNotThrow(
+        () -> userService.replaceUsersAuthorities(userAuthoritiesRequestBody));
+  }
+
+  @Test
+  @DisplayName("Replace users authorities throws BadRequestError when authority does not exist")
+  void replaceUsersAuthorities_ThrowBadRequestException_WhenAuthorityDoesNotExist() {
+    when(usersAuthoritiesService.findByAuthoritiesOrThrowBadRequestException(
+        any(String.class))).thenThrow(new BadRequestException("Authority not found."));
+
+    Assertions.assertThrows(BadRequestException.class,
+        () -> userService.replaceUsersAuthorities(userAuthoritiesRequestBody));
+    verify(usersRepository, never()).save(any(Users.class));
+  }
+
+  @Test
+  @DisplayName("replace users authorities throws BadRequestError when no user has the authority")
+  void replaceUsersAuthorities_ThrowBadExceptionError_WhenNoUserHasTheAuthority() {
+    when(usersAuthoritiesService.findByAuthoritiesOrThrowBadRequestException(
+        any(String.class))).thenReturn(null);
+
+    Assertions.assertThrows(BadRequestException.class,
+        () -> userService.replaceUsersAuthorities(userAuthoritiesRequestBody));
     verify(usersRepository, never()).save(any(Users.class));
   }
 }

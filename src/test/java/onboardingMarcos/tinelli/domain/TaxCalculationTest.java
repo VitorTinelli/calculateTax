@@ -1,6 +1,7 @@
 package onboardingMarcos.tinelli.domain;
 
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.UUID;
 import org.junit.jupiter.api.Assertions;
@@ -35,14 +36,14 @@ class TaxCalculationTest {
       taxCalculation.setTax(tax);
       Assertions.assertEquals(tax, taxCalculation.getTax());
     }, () -> {
-      taxCalculation.setTotalValue(950.00D);
-      Assertions.assertEquals(950.00D, taxCalculation.getTotalValue());
+      taxCalculation.setNfeValue(BigDecimal.valueOf(950.00D));
+      Assertions.assertEquals(BigDecimal.valueOf(950.00D), taxCalculation.getNfeValue());
     }, () -> {
       taxCalculation.setCalculationDate(LocalDate.now());
       Assertions.assertEquals(LocalDate.now(), taxCalculation.getCalculationDate());
     }, () -> {
-      taxCalculation.setTotalTaxedValue(950.00D);
-      Assertions.assertEquals(950.00D, taxCalculation.getTotalTaxedValue());
+      taxCalculation.setTaxedValue(BigDecimal.valueOf(950.00D));
+      Assertions.assertEquals(BigDecimal.valueOf(950.00D), taxCalculation.getTaxedValue());
     });
   }
 
@@ -50,7 +51,8 @@ class TaxCalculationTest {
   @DisplayName("Test the constructor method")
   void testConstructor() {
     Assertions.assertDoesNotThrow(
-        () -> new TaxCalculation(id, 950.00D, 950.00D, LocalDate.now(), tax));
+        () -> new TaxCalculation(id, BigDecimal.valueOf(1000D), BigDecimal.valueOf(950.05D),
+            LocalDate.now(), tax));
     Assertions.assertDoesNotThrow(() -> new TaxCalculation());
   }
 }

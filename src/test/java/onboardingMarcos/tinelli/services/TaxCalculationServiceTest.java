@@ -1,6 +1,7 @@
 package onboardingMarcos.tinelli.services;
 
 import static org.mockito.Mockito.*;
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
@@ -50,14 +51,16 @@ class TaxCalculationServiceTest {
   void setUp() {
     id = UUID.randomUUID();
     taxes = new Taxes(id, "ISS", 10);
-    taxCalculation = new TaxCalculation(id, 1000D, 100D, LocalDate.now(), taxes);
+    taxCalculation = new TaxCalculation(id, BigDecimal.valueOf(300D), BigDecimal.valueOf(200D),
+        LocalDate.now(), taxes);
     dateRequestBody = new DateRequestBody(LocalDate.now());
   }
 
   @Test
   @DisplayName("List all return all calculated months")
   void listAll_returnAllCalculatedMonths_WhenSuccessful() {
-    when(taxCalculationService.listAll()).thenReturn(List.of(taxCalculation));
+    when(taxCalculationService.listAll()).thenReturn(
+        List.of(taxCalculation));
     Assertions.assertFalse(taxCalculationService.listAll().isEmpty());
     verify(taxCalculationRepository).findAll();
     verifyNoMoreInteractions(taxCalculationRepository);

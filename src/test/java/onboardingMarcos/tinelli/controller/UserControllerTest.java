@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.UUID;
 import onboardingMarcos.tinelli.domain.Users;
 import onboardingMarcos.tinelli.exceptions.BadRequestException;
+import onboardingMarcos.tinelli.requests.UserAuthoritiesRequestBody;
 import onboardingMarcos.tinelli.requests.UserPostRequestBody;
 import onboardingMarcos.tinelli.requests.UserPutRequestBody;
 import onboardingMarcos.tinelli.service.UserService;
@@ -210,5 +211,20 @@ class UserControllerTest {
     Assertions.assertThrows(BadRequestException.class,
         () -> userController.replace(userPutRequestBody));
     verifyNoMoreInteractions(userService);
+  }
+
+  @Test
+  @DisplayName("put UserAuthorities replaces all user authorities when successful")
+  void put_ReplaceUserAuthorities_WhenSuccessful() {
+    when(userService.replaceUsersAuthorities(any(UserAuthoritiesRequestBody.class))).thenReturn(
+        List.of(user));
+
+    ResponseEntity<List<Users>> users = userController.replaceAuthorities(
+        new UserAuthoritiesRequestBody(
+            "contador", "gerente"));
+
+    Assertions.assertEquals(users, userController.replaceAuthorities(new UserAuthoritiesRequestBody(
+        "contador", "gerente")));
+
   }
 }
