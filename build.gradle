@@ -62,7 +62,6 @@ jacocoTestCoverageVerification {
 
 tasks.withType(Test).configureEach {
     jacoco {
-        excludes = ['**/dto/*', '**/exception/*', '**/config/*', '**/security/*', '**/repository/*']
+        excludes = ['**/exception/*', '**/config/*', '**/security/*', '**/repository/*']
     }
-
 }

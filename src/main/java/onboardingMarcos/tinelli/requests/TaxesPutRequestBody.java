@@ -37,5 +37,4 @@ public class TaxesPutRequestBody {
   public void setAliquot(Double aliquot) {
     this.aliquot = aliquot;
   }
-
 }
