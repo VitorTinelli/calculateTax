@@ -10,6 +10,8 @@ import onboardingMarcos.tinelli.repository.NfeRepository;
 import onboardingMarcos.tinelli.requests.NfePostRequestBody;
 import onboardingMarcos.tinelli.requests.NfePutRequestBody;
 import onboardingMarcos.tinelli.util.Verifications;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -22,8 +24,8 @@ public class NfeService {
     this.nfeRepository = nfeRepository;
   }
 
-  public List<Nfe> listAll() {
-    return nfeRepository.findAll();
+  public Page<Nfe> listAll(Pageable pageable) {
+    return nfeRepository.findAll(pageable);
   }
 
   public Nfe findByIdOrThrowBadRequestException(UUID id) {

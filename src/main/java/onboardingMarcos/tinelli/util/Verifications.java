@@ -5,7 +5,7 @@ import onboardingMarcos.tinelli.exceptions.BadRequestException;
 import onboardingMarcos.tinelli.requests.*;
 
 
-public class Verifications {
+public final class Verifications {
 
   private static final String FIELDS_MESSAGE = "You have to fill all fields";
 

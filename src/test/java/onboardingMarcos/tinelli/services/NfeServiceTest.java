@@ -4,7 +4,6 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import java.time.LocalDate;
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -22,6 +21,9 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 
 @ExtendWith(MockitoExtension.class)
 class NfeServiceTest {
@@ -29,6 +31,7 @@ class NfeServiceTest {
   Nfe nfe;
   NfePostRequestBody nfePostRequestBody;
   NfePutRequestBody nfePutRequestBody;
+  Page<Nfe> nfePage;
 
   @InjectMocks
   private NfeService nfeService;
@@ -51,26 +54,27 @@ class NfeServiceTest {
         LocalDate.now(),
         198.00D
     );
+    nfePage = new PageImpl<>(List.of(nfe));
   }
 
   @Test
   @DisplayName("List all returns a NFE list when successful")
   void listAll_ReturnListOfNfe_WhenSuccessful() {
-    when(nfeRepository.findAll()).thenReturn(List.of(nfe));
-    List<Nfe> savedNfe = nfeService.listAll();
+    when(nfeRepository.findAll(any(Pageable.class))).thenReturn(nfePage);
+    Page<Nfe> savedNfe = nfeService.listAll(Pageable.unpaged());
 
-    Assertions.assertEquals(savedNfe, List.of(nfe));
-    verify(nfeRepository).findAll();
+    Assertions.assertEquals(savedNfe, nfePage);
+    verify(nfeRepository).findAll(any(Pageable.class));
   }
 
   @Test
   @DisplayName("List all returns an empty list when no NFE found")
   void listAll_ReturnEmptyList_WhenNfeNotFound() {
-    when(nfeRepository.findAll()).thenReturn(Collections.emptyList());
-    List<Nfe> savedNfe = nfeService.listAll();
+    when(nfeRepository.findAll(any(Pageable.class))).thenReturn(Page.empty());
+    Page<Nfe> savedNfe = nfeService.listAll(Pageable.unpaged());
 
     Assertions.assertTrue(savedNfe.isEmpty());
-    verify(nfeRepository).findAll();
+    verify(nfeRepository).findAll(any(Pageable.class));
   }
 
   @Test

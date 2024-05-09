@@ -7,6 +7,8 @@ import onboardingMarcos.tinelli.requests.DateGapRequestBody;
 import onboardingMarcos.tinelli.requests.NfePostRequestBody;
 import onboardingMarcos.tinelli.requests.NfePutRequestBody;
 import onboardingMarcos.tinelli.service.NfeService;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -21,8 +23,8 @@ public class NfeController {
   }
 
   @GetMapping
-  public ResponseEntity<List<Nfe>> listAll() {
-    return ResponseEntity.ok(nfeService.listAll());
+  public ResponseEntity<Page<Nfe>> listAll(Pageable pageable) {
+    return ResponseEntity.ok(nfeService.listAll(pageable));
   }
 
   @GetMapping("/{id}")

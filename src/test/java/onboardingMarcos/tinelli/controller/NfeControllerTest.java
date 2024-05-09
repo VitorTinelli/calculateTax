@@ -20,10 +20,14 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 
 @ExtendWith(MockitoExtension.class)
 class NfeControllerTest {
 
+  Page<Nfe> nfePage;
   Nfe nfe;
   NfePostRequestBody nfePostRequestBody;
   NfePutRequestBody nfePutRequestBody;
@@ -54,26 +58,27 @@ class NfeControllerTest {
         LocalDate.now(),
         LocalDate.now()
     );
-
+    nfePage = new PageImpl<>(List.of(nfe));
   }
 
   @Test
-  @DisplayName("listAll returns list of nfe when successful")
+  @DisplayName("listAll returns pages of nfe when successful")
   void listAll_ReturnListOfNfe_WhenSuccessful() {
-    when(nfeService.listAll()).thenReturn(List.of(nfe));
+    when(nfeService.listAll(any(Pageable.class))).thenReturn(nfePage);
 
-    Assertions.assertEquals(nfeController.listAll().getBody(), List.of(nfe));
-    verify(nfeService).listAll();
+    Assertions.assertEquals(nfeController.listAll(Pageable.unpaged()).getBody(),
+        nfePage);
+    verify(nfeService).listAll(Pageable.unpaged());
     verifyNoMoreInteractions(nfeService);
   }
 
   @Test
-  @DisplayName("listAll returns empty list when any nfe exists")
+  @DisplayName("listAll returns empty page when any nfe exists")
   void listAll_ReturnEmptyList_WhenNfeNotExist() {
-    when(nfeService.listAll()).thenReturn(Collections.emptyList());
+    when(nfeService.listAll(any(Pageable.class))).thenReturn(Page.empty());
 
-    Assertions.assertEquals(nfeController.listAll().getBody(), Collections.emptyList());
-    verify(nfeService).listAll();
+    Assertions.assertEquals(nfeController.listAll(Pageable.unpaged()).getBody(), Page.empty());
+    verify(nfeService).listAll(Pageable.unpaged());
     verifyNoMoreInteractions(nfeService);
   }
 
@@ -197,9 +202,7 @@ class NfeControllerTest {
   @DisplayName("Delete nfe when successful")
   void delete_DeleteNfe_WhenSuccessful() {
     doNothing().when(nfeService).delete(nfe.getId());
-
     Assertions.assertDoesNotThrow(() -> nfeController.delete(nfe.getId()));
-    Assertions.assertEquals(Collections.emptyList(), nfeService.listAll());
     verify(nfeService).delete(nfe.getId());
   }
 
