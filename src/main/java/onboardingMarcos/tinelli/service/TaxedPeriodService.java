@@ -3,7 +3,6 @@ package onboardingMarcos.tinelli.service;
 
 import static java.time.temporal.TemporalAdjusters.firstDayOfMonth;
 import static java.time.temporal.TemporalAdjusters.lastDayOfMonth;
-import static java.util.stream.Collectors.toList;
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
 import java.time.LocalDate;
@@ -36,11 +35,7 @@ public class TaxedPeriodService {
   }
 
   public List<TaxedPeriod> listAll() {
-    return taxedPeriodRepository.findAll().stream().map(tax -> {
-      tax.setTaxedValue(new BigDecimal(formatter.format(tax.getTaxedValue())));
-      tax.setNfeValue(new BigDecimal(formatter.format(tax.getNfeValue())));
-      return tax;
-    }).collect(toList());
+    return taxedPeriodRepository.findAll();
   }
 
   public TaxedPeriod findByIdOrThrowBadExceptionError(UUID id) {
