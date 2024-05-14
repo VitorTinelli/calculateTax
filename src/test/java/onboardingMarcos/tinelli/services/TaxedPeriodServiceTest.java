@@ -57,7 +57,7 @@ class TaxedPeriodServiceTest {
   }
 
   @Test
-  @DisplayName("List all return all calculated months")
+  @DisplayName("List all return all taxedPeriods")
   void listAll_returnAllCalculatedMonths_WhenSuccessful() {
     when(taxedPeriodService.listAll()).thenReturn(
         List.of(taxedPeriod));
@@ -67,8 +67,8 @@ class TaxedPeriodServiceTest {
   }
 
   @Test
-  @DisplayName("Find by taxCalculated ID return a taxCalculated (one tax)")
-  void findByTaxCalculatedId_returnTaxCalculated_WhenSuccessful() {
+  @DisplayName("Find by taxedPeriod ID return one taxedPeriod")
+  void findBytaxedPeriodId_returntaxedPeriod_WhenSuccessful() {
     when(taxedPeriodRepository.findById(id)).thenReturn(Optional.of(taxedPeriod));
     Assertions.assertEquals(taxedPeriod,
         taxedPeriodService.findByIdOrThrowBadExceptionError(id));
@@ -77,16 +77,16 @@ class TaxedPeriodServiceTest {
   }
 
   @Test
-  @DisplayName("Find by taxCalculated ID throw BadRequestException when taxCalculated not found")
-  void findByTaxCalculatedId_throwBadRequestException_WhenTaxCalculatedNotFound() {
+  @DisplayName("Find by taxedPeriod ID throw BadRequestException when taxedPeriod not found")
+  void findByTaxedPeriodId_throwBadRequestException_WhentaxedPeriodNotFound() {
     when(taxedPeriodRepository.findById(id)).thenReturn(Optional.empty());
     Assertions.assertThrows(BadRequestException.class,
         () -> taxedPeriodService.findByIdOrThrowBadExceptionError(id));
   }
 
   @Test
-  @DisplayName("Find by month return a taxCalculated list when successful")
-  void findByMonth_returnTaxCalculatedList_WhenSuccessful() {
+  @DisplayName("Find by month return a taxedPeriod list when successful")
+  void findByMonth_returnTaxedPeriodList_WhenSuccessful() {
     when(taxedPeriodRepository.findByCalculationDate(any(LocalDate.class)))
         .thenReturn(List.of(taxedPeriod));
     Assertions.assertFalse(taxedPeriodService.findByMonth(dateRequestBody.getDate()).isEmpty());
@@ -94,8 +94,8 @@ class TaxedPeriodServiceTest {
   }
 
   @Test
-  @DisplayName("Find by month throw BadRequestException when no taxCalculated found")
-  void findByMonth_throwBadRequestException_WhenNoTaxCalculatedFound() {
+  @DisplayName("Find by month throw BadRequestException when no taxedPeriod found")
+  void findByMonth_throwBadRequestException_WhenNoTaxedPeriodFound() {
     when(taxedPeriodRepository.findByCalculationDate(any(LocalDate.class))).thenReturn(
         List.of());
     Assertions.assertThrows(BadRequestException.class,
@@ -103,8 +103,8 @@ class TaxedPeriodServiceTest {
   }
 
   @Test
-  @DisplayName("Post by date period return a taxCalculated if any nfe found")
-  void postByDatePeriod_returnTaxCalculated_WhenAnyNfeFound() {
+  @DisplayName("Post by date period return a taxedPeriod if any nfe found")
+  void postByDatePeriod_returnTaxedPeriod_WhenAnyNfeFound() {
     when(nfeService.findByTimePeriod(any(LocalDate.class), any(LocalDate.class))).thenReturn(
         List.of());
     when(taxesService.listAll()).thenReturn(List.of(taxes));
@@ -115,8 +115,8 @@ class TaxedPeriodServiceTest {
   }
 
   @Test
-  @DisplayName("Delete and post by date period return a taxCalculated change in period")
-  void deleteAndPostByDatePeriod_returnTaxCalculatedChangeInPeriod() {
+  @DisplayName("Delete and post by date period return a taxedPeriod change in period")
+  void deleteAndPostByDatePeriod_returnTaxedPeriodChangeInPeriod() {
     when(nfeService.findByTimePeriod(any(LocalDate.class), any(LocalDate.class))).thenReturn(
         List.of());
     when(taxesService.listAll()).thenReturn(List.of(taxes));
@@ -129,8 +129,8 @@ class TaxedPeriodServiceTest {
   }
 
   @Test
-  @DisplayName("Delete by ID deletes a taxCalculated when successful")
-  void deleteById_DeletesTaxCalculated_WhenSuccessful() {
+  @DisplayName("Delete by ID deletes a taxedPeriod when successful")
+  void deleteById_DeletesTaxedPeriod_WhenSuccessful() {
     when(taxedPeriodRepository.findById(taxedPeriod.getId())).thenReturn(
         Optional.of(taxedPeriod));
     doNothing().when(taxedPeriodRepository).delete(taxedPeriod);
@@ -139,8 +139,8 @@ class TaxedPeriodServiceTest {
   }
 
   @Test
-  @DisplayName("Delete all by month deletes all taxCalculated in a month")
-  void deleteAllByMonth_DeletesAllTaxCalculatedInAMonth() {
+  @DisplayName("Delete all by month deletes all taxedPeriod ")
+  void deleteAllByMonth_DeletesAllTaxedPeriodInAMonth() {
     when(taxedPeriodRepository.findByCalculationDate(any(LocalDate.class))).thenReturn(
         List.of(taxedPeriod));
     doNothing().when(taxedPeriodRepository).deleteAll(List.of(taxedPeriod));

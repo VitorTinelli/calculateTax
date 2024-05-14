@@ -43,7 +43,7 @@ class TaxedPeriodControllerTest {
   }
 
   @Test
-  @DisplayName("List all return all calculated months")
+  @DisplayName("List all return all taxedPeriods")
   void listAll_returnAllCalculatedMonths_WhenSuccessful() {
     when(taxedPeriodService.listAll()).thenReturn(
         List.of(taxedPeriod));
@@ -53,7 +53,7 @@ class TaxedPeriodControllerTest {
   }
 
   @Test
-  @DisplayName("Find by month return the calculated tax for the month")
+  @DisplayName("Find by month return the taxedPeriod")
   void findByMonth_returnCalculatedTaxForTheMonth_WhenSuccessful() {
     when(taxedPeriodService.findByMonth(dateRequestBody.getDate())).thenReturn(
         List.of(taxedPeriod));
@@ -65,7 +65,7 @@ class TaxedPeriodControllerTest {
   }
 
   @Test
-  @DisplayName("Post by date period return the calculated tax for the month")
+  @DisplayName("Post by date period return the taxedPeriod")
   void postByDatePeriod_returnCalculatedTaxForTheMonth_WhenItIsNotAlreadyRegistered() {
     when(taxedPeriodService.postByDatePeriod(LocalDate.now())).thenReturn(
         List.of(taxedPeriod));
@@ -77,7 +77,7 @@ class TaxedPeriodControllerTest {
   }
 
   @Test
-  @DisplayName("Post by date period replaces the calculated tax for the month when any chenge is detected")
+  @DisplayName("Post by date period replaces the taxedPeriod when any chenge is detected")
   void postByDatePeriod_replacesCalculatedTaxForTheMonth_WhenAnyChangeIsDetected() {
     when(taxedPeriodService.postByDatePeriod(LocalDate.now())).thenReturn(
         List.of(taxedPeriod));
@@ -102,7 +102,7 @@ class TaxedPeriodControllerTest {
   }
 
   @Test
-  @DisplayName("Delete by id deletes a tax calculation when successful")
+  @DisplayName("Delete by id deletes a taxedPeriod when successful")
   void deleteById_deletesTaxCalculation_WhenSuccessful() {
     doNothing().when(taxedPeriodService).deleteById(id);
     Assertions.assertDoesNotThrow(() -> taxedPeriodController.deleteById(id));
@@ -110,7 +110,7 @@ class TaxedPeriodControllerTest {
   }
 
   @Test
-  @DisplayName("Delete all by month deletes all tax calculations for the month when successful")
+  @DisplayName("Delete all by month deletes all taxedPeriods for the month when successful")
   void deleteAllByMonth_deletesAllTaxCalculationsForTheMonth_WhenSuccessful() {
     doNothing().when(taxedPeriodService).deleteAllByMonth(dateRequestBody.getDate());
     Assertions.assertDoesNotThrow(() -> taxedPeriodController.deleteAllByMonth(dateRequestBody));
