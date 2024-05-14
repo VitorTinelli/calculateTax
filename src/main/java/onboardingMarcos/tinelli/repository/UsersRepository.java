@@ -11,6 +11,5 @@ public interface UsersRepository extends JpaRepository<Users, UUID> {
 
   Optional<Users> findBycpf(Long cpf);
   UserDetails findByUsername(String username);
-
   List<Users> findByAuthorities(String authorities);
 }

@@ -13,12 +13,12 @@ import org.mockito.InjectMocks;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 @ExtendWith(MockitoExtension.class)
-class TaxCalculationTest {
+class TaxedPeriodTest {
 
   UUID id;
   Taxes tax;
   @InjectMocks
-  private TaxCalculation taxCalculation;
+  private TaxedPeriod taxedPeriod;
 
   @BeforeEach
   void setUp() {
@@ -30,20 +30,20 @@ class TaxCalculationTest {
   @DisplayName("Test all getters and setters methods")
   void testGettersAndSetters() {
     Assertions.assertAll(() -> {
-      taxCalculation.setId(id);
-      Assertions.assertEquals(id, taxCalculation.getId());
+      taxedPeriod.setId(id);
+      Assertions.assertEquals(id, taxedPeriod.getId());
     }, () -> {
-      taxCalculation.setTax(tax);
-      Assertions.assertEquals(tax, taxCalculation.getTax());
+      taxedPeriod.setTax(tax);
+      Assertions.assertEquals(tax, taxedPeriod.getTax());
     }, () -> {
-      taxCalculation.setNfeValue(BigDecimal.valueOf(950.00D));
-      Assertions.assertEquals(BigDecimal.valueOf(950.00D), taxCalculation.getNfeValue());
+      taxedPeriod.setNfeValue(BigDecimal.valueOf(950.00D));
+      Assertions.assertEquals(BigDecimal.valueOf(950.00D), taxedPeriod.getNfeValue());
     }, () -> {
-      taxCalculation.setCalculationDate(LocalDate.now());
-      Assertions.assertEquals(LocalDate.now(), taxCalculation.getCalculationDate());
+      taxedPeriod.setCalculationDate(LocalDate.now());
+      Assertions.assertEquals(LocalDate.now(), taxedPeriod.getCalculationDate());
     }, () -> {
-      taxCalculation.setTaxedValue(BigDecimal.valueOf(950.00D));
-      Assertions.assertEquals(BigDecimal.valueOf(950.00D), taxCalculation.getTaxedValue());
+      taxedPeriod.setTaxedValue(BigDecimal.valueOf(950.00D));
+      Assertions.assertEquals(BigDecimal.valueOf(950.00D), taxedPeriod.getTaxedValue());
     });
   }
 
@@ -51,8 +51,8 @@ class TaxCalculationTest {
   @DisplayName("Test the constructor method")
   void testConstructor() {
     Assertions.assertDoesNotThrow(
-        () -> new TaxCalculation(id, BigDecimal.valueOf(1000D), BigDecimal.valueOf(950.05D),
+        () -> new TaxedPeriod(id, BigDecimal.valueOf(1000D), BigDecimal.valueOf(950.05D),
             LocalDate.now(), tax));
-    Assertions.assertDoesNotThrow(() -> new TaxCalculation());
+    Assertions.assertDoesNotThrow(() -> new TaxedPeriod());
   }
 }

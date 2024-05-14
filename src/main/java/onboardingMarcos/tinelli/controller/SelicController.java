@@ -12,7 +12,7 @@ public class SelicController {
 
   private final SelicService selicService;
 
-  public SelicController(SelicService selicService) {
+  public SelicController(final SelicService selicService) {
     this.selicService = selicService;
   }
 

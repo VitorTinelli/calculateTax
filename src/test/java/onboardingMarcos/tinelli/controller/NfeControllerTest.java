@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.UUID;
 import onboardingMarcos.tinelli.domain.Nfe;
 import onboardingMarcos.tinelli.exceptions.BadRequestException;
-import onboardingMarcos.tinelli.requests.DateGapRequestBody;
+import onboardingMarcos.tinelli.requests.DatePeriodRequestBody;
 import onboardingMarcos.tinelli.requests.NfePostRequestBody;
 import onboardingMarcos.tinelli.requests.NfePutRequestBody;
 import onboardingMarcos.tinelli.service.NfeService;
@@ -31,7 +31,7 @@ class NfeControllerTest {
   Nfe nfe;
   NfePostRequestBody nfePostRequestBody;
   NfePutRequestBody nfePutRequestBody;
-  DateGapRequestBody dateGapRequestBody;
+  DatePeriodRequestBody datePeriodRequestBody;
 
   @InjectMocks
   private NfeController nfeController;
@@ -54,7 +54,7 @@ class NfeControllerTest {
         LocalDate.now(),
         198.00D
     );
-    dateGapRequestBody = new DateGapRequestBody(
+    datePeriodRequestBody = new DatePeriodRequestBody(
         LocalDate.now(),
         LocalDate.now()
     );
@@ -152,24 +152,24 @@ class NfeControllerTest {
   @Test
   @DisplayName("listAllByTimeGap returns list of nfe when successful")
   void listAllByTimeGap_ReturnListOfNfe_WhenSuccessful() {
-    when(nfeService.findByTimeGap(any(LocalDate.class), any(LocalDate.class))).thenReturn(
+    when(nfeService.findByTimePeriod(any(LocalDate.class), any(LocalDate.class))).thenReturn(
         List.of(nfe));
 
     Assertions.assertTrue(
-        nfeController.listAllByTimeGap(dateGapRequestBody).getBody().contains(nfe));
-    verify(nfeService).findByTimeGap(any(LocalDate.class), any(LocalDate.class));
+        nfeController.listAllInTimePeriod(datePeriodRequestBody).getBody().contains(nfe));
+    verify(nfeService).findByTimePeriod(any(LocalDate.class), any(LocalDate.class));
     verifyNoMoreInteractions(nfeService);
   }
 
   @Test
   @DisplayName("listAllByTimeGap returns empty list when no nfe found")
   void listAllByTimeGap_ReturnEmptyList_WhenNoNfeFound() {
-    when(nfeService.findByTimeGap(any(LocalDate.class), any(LocalDate.class))).thenReturn(
+    when(nfeService.findByTimePeriod(any(LocalDate.class), any(LocalDate.class))).thenReturn(
         Collections.emptyList());
 
     Assertions.assertTrue(
-        nfeController.listAllByTimeGap(dateGapRequestBody).getBody().isEmpty());
-    verify(nfeService).findByTimeGap(any(LocalDate.class), any(LocalDate.class));
+        nfeController.listAllInTimePeriod(datePeriodRequestBody).getBody().isEmpty());
+    verify(nfeService).findByTimePeriod(any(LocalDate.class), any(LocalDate.class));
     verifyNoMoreInteractions(nfeService);
   }
 

@@ -8,7 +8,7 @@ import java.time.LocalDate;
 import java.util.UUID;
 
 @Entity
-public class TaxCalculation {
+public class TaxedPeriod {
 
   @Id
   private UUID id;
@@ -18,10 +18,10 @@ public class TaxCalculation {
   @ManyToOne
   private Taxes tax;
 
-  public TaxCalculation() {
+  public TaxedPeriod() {
   }
 
-  public TaxCalculation(UUID id, BigDecimal nfeValue, BigDecimal taxedValue,
+  public TaxedPeriod(UUID id, BigDecimal nfeValue, BigDecimal taxedValue,
       LocalDate calculationDate, Taxes tax) {
     this.id = id;
     this.nfeValue = nfeValue;

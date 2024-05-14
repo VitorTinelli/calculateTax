@@ -11,47 +11,47 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 import onboardingMarcos.tinelli.domain.Nfe;
-import onboardingMarcos.tinelli.domain.TaxCalculation;
+import onboardingMarcos.tinelli.domain.TaxedPeriod;
 import onboardingMarcos.tinelli.domain.Taxes;
 import onboardingMarcos.tinelli.exceptions.BadRequestException;
-import onboardingMarcos.tinelli.repository.TaxCalculationRepository;
+import onboardingMarcos.tinelli.repository.TaxedPeriodRepository;
 import org.springframework.stereotype.Service;
 
 @Service
-public class TaxCalculationService {
+public class TaxedPeriodService {
 
   private final DecimalFormat formatter = new DecimalFormat("0.00");
   private final SelicService selicService;
-  private final TaxCalculationRepository taxCalculationRepository;
+  private final TaxedPeriodRepository taxedPeriodRepository;
   private final NfeService nfeService;
   private final TaxesService taxesService;
 
-  public TaxCalculationService(final SelicService selicService,
-      final TaxCalculationRepository taxCalculationRepository,
+  public TaxedPeriodService(final SelicService selicService,
+      final TaxedPeriodRepository taxedPeriodRepository,
       final NfeService nfeService, final TaxesService taxesService) {
     this.selicService = selicService;
-    this.taxCalculationRepository = taxCalculationRepository;
+    this.taxedPeriodRepository = taxedPeriodRepository;
     this.nfeService = nfeService;
     this.taxesService = taxesService;
   }
 
-  public List<TaxCalculation> listAll() {
-    return taxCalculationRepository.findAll().stream().map(tax -> {
+  public List<TaxedPeriod> listAll() {
+    return taxedPeriodRepository.findAll().stream().map(tax -> {
       tax.setTaxedValue(new BigDecimal(formatter.format(tax.getTaxedValue())));
       tax.setNfeValue(new BigDecimal(formatter.format(tax.getNfeValue())));
       return tax;
     }).collect(toList());
   }
 
-  public TaxCalculation findByIdOrThrowBadExceptionError(UUID id) {
-    return taxCalculationRepository.findById(id)
+  public TaxedPeriod findByIdOrThrowBadExceptionError(UUID id) {
+    return taxedPeriodRepository.findById(id)
         .orElseThrow(
             () -> new BadRequestException("Tax not found, please verify the provided ID."));
   }
 
-  public List<TaxCalculation> findByMonth(LocalDate date) {
-    List<TaxCalculation> list =
-        taxCalculationRepository.findByCalculationDate(date.with(firstDayOfMonth()));
+  public List<TaxedPeriod> findByMonth(LocalDate date) {
+    List<TaxedPeriod> list =
+        taxedPeriodRepository.findByCalculationDate(date.with(firstDayOfMonth()));
     if (list.isEmpty()) {
       throw new BadRequestException("No taxes calculated for this month.");
     } else {
@@ -59,12 +59,12 @@ public class TaxCalculationService {
     }
   }
 
-  public List<TaxCalculation> postByDatePeriod(LocalDate dateRequestBody) {
-    List<TaxCalculation> newTaxedValues = new ArrayList<>();
+  public List<TaxedPeriod> postByDatePeriod(LocalDate dateRequestBody) {
+    List<TaxedPeriod> newTaxedValues = new ArrayList<>();
     List<Taxes> taxesList = taxesService.listAll();
-    List<TaxCalculation> savedTaxes = taxCalculationRepository.findByCalculationDate(
+    List<TaxedPeriod> savedTaxes = taxedPeriodRepository.findByCalculationDate(
         dateRequestBody.with(firstDayOfMonth()));
-    List<Nfe> nfeList = nfeService.findByTimeGap(dateRequestBody.with(firstDayOfMonth()),
+    List<Nfe> nfeList = nfeService.findByTimePeriod(dateRequestBody.with(firstDayOfMonth()),
         dateRequestBody.with((lastDayOfMonth())));
     Double nfeValue = nfeList.stream().mapToDouble(Nfe::getValue).sum();
 
@@ -74,7 +74,7 @@ public class TaxCalculationService {
               calculateTaxAndSave(tax, nfeValue, dateRequestBody)));
     } else if (savedTaxes.size() != taxesList.size()
         || savedTaxes.get(0).getNfeValue().compareTo(BigDecimal.valueOf(nfeValue)) != 0) {
-      taxCalculationRepository.deleteAll(savedTaxes);
+      taxedPeriodRepository.deleteAll(savedTaxes);
       taxesList.forEach(
           tax -> newTaxedValues.add(
               calculateTaxAndSave(tax, nfeValue, dateRequestBody)));
@@ -84,20 +84,20 @@ public class TaxCalculationService {
     return newTaxedValues;
   }
 
-  private TaxCalculation calculateTaxAndSave(Taxes tax, Double nfeValue, LocalDate date) {
+  private TaxedPeriod calculateTaxAndSave(Taxes tax, Double nfeValue, LocalDate date) {
     Double taxedValue = nfeValue * ((tax.getAliquot() + selicService.getSelicPerMonth()) / 100);
-    return taxCalculationRepository.save(
-        new TaxCalculation(UUID.randomUUID(),
+    return taxedPeriodRepository.save(
+        new TaxedPeriod(UUID.randomUUID(),
             BigDecimal.valueOf(Double.parseDouble(formatter.format(nfeValue))),
             BigDecimal.valueOf(Double.parseDouble(formatter.format(taxedValue))),
             date.with(firstDayOfMonth()), tax));
   }
 
   public void deleteById(UUID id) {
-    taxCalculationRepository.delete(findByIdOrThrowBadExceptionError(id));
+    taxedPeriodRepository.delete(findByIdOrThrowBadExceptionError(id));
   }
 
   public void deleteAllByMonth(LocalDate date) {
-    taxCalculationRepository.deleteAll(findByMonth(date));
+    taxedPeriodRepository.deleteAll(findByMonth(date));
   }
 }

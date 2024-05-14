@@ -34,7 +34,7 @@ public class NfeService {
             "NFe not Found, Please verify the provided ID"));
   }
 
-  public List<Nfe> findByTimeGap(LocalDate start, LocalDate end) {
+  public List<Nfe> findByTimePeriod(LocalDate start, LocalDate end) {
     return nfeRepository.findByDateBetween(start, end);
   }
 

@@ -3,7 +3,7 @@ package onboardingMarcos.tinelli.controller;
 import java.util.List;
 import java.util.UUID;
 import onboardingMarcos.tinelli.domain.Nfe;
-import onboardingMarcos.tinelli.requests.DateGapRequestBody;
+import onboardingMarcos.tinelli.requests.DatePeriodRequestBody;
 import onboardingMarcos.tinelli.requests.NfePostRequestBody;
 import onboardingMarcos.tinelli.requests.NfePutRequestBody;
 import onboardingMarcos.tinelli.service.NfeService;
@@ -38,10 +38,10 @@ public class NfeController {
   }
 
   @GetMapping("/date")
-  public ResponseEntity<List<Nfe>> listAllByTimeGap(
-      @RequestBody DateGapRequestBody dateGapRequestBody) {
-    return ResponseEntity.ok(nfeService.findByTimeGap(dateGapRequestBody.getStartDate(),
-        dateGapRequestBody.getEndDate()));
+  public ResponseEntity<List<Nfe>> listAllInTimePeriod(
+      @RequestBody DatePeriodRequestBody datePeriodRequestBody) {
+    return ResponseEntity.ok(nfeService.findByTimePeriod(datePeriodRequestBody.getStartDate(),
+        datePeriodRequestBody.getEndDate()));
   }
 
   @PostMapping

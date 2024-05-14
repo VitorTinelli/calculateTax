@@ -22,14 +22,14 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.ResponseEntity;
 
 @ExtendWith(MockitoExtension.class)
-class UserControllerTest {
+class UsersControllerTest {
 
   private Users user;
   private UserPostRequestBody userPostRequestBody;
   private UserPutRequestBody userPutRequestBody;
 
   @InjectMocks
-  private UserController userController;
+  private UsersController usersController;
 
   @Mock
   private UserService userService;
@@ -57,9 +57,9 @@ class UserControllerTest {
   @DisplayName("listAll returns list of users when successful")
   void listAll_ReturnsAListOfUsers_WhenSuccessful() {
     when(userService.listAll()).thenReturn(List.of(user));
-    ResponseEntity<List<Users>> users = userController.listAll();
+    ResponseEntity<List<Users>> users = usersController.listAll();
 
-    Assertions.assertEquals(users, userController.listAll());
+    Assertions.assertEquals(users, usersController.listAll());
     verifyNoMoreInteractions(userService);
   }
 
@@ -67,7 +67,7 @@ class UserControllerTest {
   @DisplayName("listAll returns empty list when any user exists")
   void listAll_ReturnEmptyList_WhenUsersNotExist() {
     when(userService.listAll()).thenReturn(Collections.emptyList());
-    ResponseEntity<List<Users>> users = userController.listAll();
+    ResponseEntity<List<Users>> users = usersController.listAll();
 
     verify(userService).listAll();
     verifyNoMoreInteractions(userService);
@@ -78,7 +78,7 @@ class UserControllerTest {
   @DisplayName("findById returns an user when successful")
   void findById_ReturnAnUser_WhenSuccessful() {
     when(userService.findByIdOrThrowBadRequestException(user.getId())).thenReturn(user);
-    ResponseEntity<Users> users = userController.findById(user.getId());
+    ResponseEntity<Users> users = usersController.findById(user.getId());
 
     verify(userService).findByIdOrThrowBadRequestException(user.getId());
     verifyNoMoreInteractions(userService);
@@ -91,7 +91,8 @@ class UserControllerTest {
     when(userService.findByIdOrThrowBadRequestException(user.getId())).thenThrow(
         new BadRequestException("User not Found, Please verify the provided ID"));
 
-    Assertions.assertThrows(BadRequestException.class, () -> userController.findById(user.getId()));
+    Assertions.assertThrows(BadRequestException.class,
+        () -> usersController.findById(user.getId()));
     verify(userService).findByIdOrThrowBadRequestException(user.getId());
     verifyNoMoreInteractions(userService);
   }
@@ -102,7 +103,7 @@ class UserControllerTest {
     when(userService.findByIdOrThrowBadRequestException(null)).thenThrow(
         new BadRequestException("User not Found, Please verify the provided ID"));
 
-    Assertions.assertThrows(BadRequestException.class, () -> userController.findById(null));
+    Assertions.assertThrows(BadRequestException.class, () -> usersController.findById(null));
     verify(userService).findByIdOrThrowBadRequestException(null);
     verifyNoMoreInteractions(userService);
   }
@@ -111,9 +112,9 @@ class UserControllerTest {
   @DisplayName("post returns an user when successful")
   void post_ReturnsUser_WhenSuccessful() {
     when(userService.save(any(UserPostRequestBody.class))).thenReturn(user);
-    ResponseEntity<Users> users = userController.save(userPostRequestBody);
+    ResponseEntity<Users> users = usersController.save(userPostRequestBody);
 
-    Assertions.assertEquals(users, userController.save(userPostRequestBody));
+    Assertions.assertEquals(users, usersController.save(userPostRequestBody));
     verifyNoMoreInteractions(userService);
   }
 
@@ -124,7 +125,7 @@ class UserControllerTest {
         new BadRequestException("CPF already registered"));
 
     Assertions.assertThrows(BadRequestException.class,
-        () -> userController.save(userPostRequestBody));
+        () -> usersController.save(userPostRequestBody));
     verifyNoMoreInteractions(userService);
   }
 
@@ -140,14 +141,14 @@ class UserControllerTest {
         new BadRequestException("User fields cannot be blank"));
 
     Assertions.assertThrows(BadRequestException.class,
-        () -> userController.save(userPostRequestBody));
+        () -> usersController.save(userPostRequestBody));
     verifyNoMoreInteractions(userService);
   }
 
   @Test
   @DisplayName("delete removes user when successful")
   void delete_RemovesUser_WhenSuccessful() {
-    ResponseEntity<Void> deletar = userController.delete(user.getId());
+    ResponseEntity<Void> deletar = usersController.delete(user.getId());
 
     Assertions.assertEquals(ResponseEntity.noContent().build(), deletar);
     verify(userService).delete(user.getId());
@@ -160,7 +161,7 @@ class UserControllerTest {
     doThrow(new BadRequestException("User not Found, Please verify the provided ID"))
         .when(userService).delete(user.getId());
 
-    Assertions.assertThrows(BadRequestException.class, () -> userController.delete(user.getId()));
+    Assertions.assertThrows(BadRequestException.class, () -> usersController.delete(user.getId()));
     verify(userService).delete(user.getId());
     verifyNoMoreInteractions(userService);
   }
@@ -170,7 +171,7 @@ class UserControllerTest {
   void delete_ThrowsBadRequestException_WhenProvidedIdIsNull() {
     doThrow(new BadRequestException("ID not provided, please provide an ID")).when(userService)
         .delete(null);
-    Assertions.assertThrows(BadRequestException.class, () -> userController.delete(null));
+    Assertions.assertThrows(BadRequestException.class, () -> usersController.delete(null));
     verify(userService).delete(null);
     verifyNoMoreInteractions(userService);
   }
@@ -179,7 +180,7 @@ class UserControllerTest {
   @DisplayName("put updates user when successful")
   void put_ReplaceBrand_WhenSuccessful() {
     doNothing().when(userService).replace(any(UserPutRequestBody.class));
-    ResponseEntity<Void> user = userController.replace(userPutRequestBody);
+    ResponseEntity<Void> user = usersController.replace(userPutRequestBody);
 
     Assertions.assertEquals(ResponseEntity.noContent().build(), user);
     verify(userService).replace(any(UserPutRequestBody.class));
@@ -193,7 +194,7 @@ class UserControllerTest {
         .replace(userPutRequestBody);
 
     Assertions.assertThrows(BadRequestException.class,
-        () -> userController.replace(userPutRequestBody));
+        () -> usersController.replace(userPutRequestBody));
     verifyNoMoreInteractions(userService);
   }
 
@@ -209,7 +210,7 @@ class UserControllerTest {
         .replace(userPutRequestBody);
 
     Assertions.assertThrows(BadRequestException.class,
-        () -> userController.replace(userPutRequestBody));
+        () -> usersController.replace(userPutRequestBody));
     verifyNoMoreInteractions(userService);
   }
 
@@ -219,11 +220,12 @@ class UserControllerTest {
     when(userService.replaceUsersAuthorities(any(UserAuthoritiesRequestBody.class))).thenReturn(
         List.of(user));
 
-    ResponseEntity<List<Users>> users = userController.replaceAuthorities(
+    ResponseEntity<List<Users>> users = usersController.replaceAuthorities(
         new UserAuthoritiesRequestBody(
             "contador", "gerente"));
 
-    Assertions.assertEquals(users, userController.replaceAuthorities(new UserAuthoritiesRequestBody(
+    Assertions.assertEquals(users,
+        usersController.replaceAuthorities(new UserAuthoritiesRequestBody(
         "contador", "gerente")));
 
   }

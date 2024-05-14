@@ -13,7 +13,7 @@ public class UserAuthoritiesController {
 
   private final UserAuthoritiesService userAuthoritiesService;
 
-  public UserAuthoritiesController(UserAuthoritiesService userAuthoritiesService) {
+  public UserAuthoritiesController(final UserAuthoritiesService userAuthoritiesService) {
     this.userAuthoritiesService = userAuthoritiesService;
   }
 

@@ -13,11 +13,11 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("users")
-public class UserController {
+public class UsersController {
 
   private final UserService userService;
 
-  public UserController(final UserService userService) {
+  public UsersController(final UserService userService) {
     this.userService = userService;
   }
 
@@ -48,7 +48,7 @@ public class UserController {
     return ResponseEntity.noContent().build();
   }
 
-  @PutMapping("authorities")
+  @PutMapping("/authorities")
   public ResponseEntity<List<Users>> replaceAuthorities(
       @RequestBody UserAuthoritiesRequestBody userAuthoritiesRequestBody) {
     return ResponseEntity.ok(userService.replaceUsersAuthorities(userAuthoritiesRequestBody));

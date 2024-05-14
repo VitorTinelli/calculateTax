@@ -2,16 +2,16 @@ package onboardingMarcos.tinelli.requests;
 
 import java.time.LocalDate;
 
-public class DateGapRequestBody {
+public class DatePeriodRequestBody {
   private LocalDate startDate;
   private LocalDate endDate;
 
-  public DateGapRequestBody(LocalDate startDate, LocalDate endDate) {
+  public DatePeriodRequestBody(LocalDate startDate, LocalDate endDate) {
     this.startDate = startDate;
     this.endDate = endDate;
   }
 
-  public DateGapRequestBody() {
+  public DatePeriodRequestBody() {
   }
 
   public LocalDate getStartDate() {

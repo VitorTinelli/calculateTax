@@ -102,7 +102,7 @@ class NfeServiceTest {
   void findByDatePeriod_ReturnListOfNfe_WhenSuccessful() {
     when(nfeRepository.findByDateBetween(LocalDate.now(), LocalDate.now())).thenReturn(
         List.of(nfe));
-    List<Nfe> savedNfe = nfeService.findByTimeGap(LocalDate.now(), LocalDate.now());
+    List<Nfe> savedNfe = nfeService.findByTimePeriod(LocalDate.now(), LocalDate.now());
 
     Assertions.assertEquals(savedNfe, List.of(nfe));
     verify(nfeRepository).findByDateBetween(LocalDate.now(), LocalDate.now());
